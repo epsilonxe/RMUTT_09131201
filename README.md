@@ -15,7 +15,7 @@ Lecturers:
 |  SEC02  | TUE     |ST1910 13.00 - 15.00 | ST1905 15.00 - 17.00 |
 |  SEC03  | TUE     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
 
-Midterm Exam: TBA
+Midterm Exam: TBA ...
 Final Exam: TBA
 
 ## Course Description
