@@ -1,37 +1,72 @@
-## Welcome to GitHub Pages
+# RMUTT 09131201
+Offical Repository of RMUTT 09131201 Numerical Methods for Computers
 
-You can use the [editor on GitHub](https://github.com/epsilonxe/RMUTT_09131201/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Lecturers:
+ - Wongwisarut Kuangsatung, Asst.Prof.Dr.
+ - Ratthaprom Promkam, Dr.rer.nat
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![Banner](./materials/banner.jpg)
 
-### Markdown
+## Schedules
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+| Section | Date    | Lecture  | Workshop |
+|---------|---------|----------|----------|
+|  SEC01  | WED     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
+|  SEC02  | TUE     |ST1910 13.00 - 15.00 | ST1905 15.00 - 17.00 |
+|  SEC03  | TUE     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
 
-```markdown
-Syntax highlighted code block
+Midterm Exam: TBA
+Final Exam: TBA
 
-# Header 1
-## Header 2
-### Header 3
+## Course Description
 
-- Bulleted
-- List
+เครื่องมือสำหรับแก้ปัญหาเชิงตัวเลข การวิเคราะห์ความคลาดเคลื่อน ผลเฉลยของสมการแบบไม่เชิงเส้น ผลเฉลยของระบบสมการเชิงเส้น การประมาณค่าในช่วง การประมาณค่ากำลังสองน้อยที่สุด อนุพันธ์และปริพันธ์เชิงตัวเลข ผลเฉลยเชิงตัวเลขของสมการเชิงอนุพันธ์ การแก้ปัญหาเชิงตัวเลขด้วยคอมพิวเตอร์ และการประยุกต์ใช้เครื่องมือสำหรับแก้ปัญหาเชิงตัวเลข
+          
+Tools for numerical problem solving, error analysis, solutions of nonlinear equations, solution of systems of linear equations, interpolation, least square approximation, numerical diffentiation and integration, numerical solution of differential equations, numerical problem solving by computer, applying in tools for numerical problem solving
 
-1. Numbered
-2. List
+## Class Materials
 
-**Bold** and _Italic_ and `Code` text
+|    Topic   |   Description   |    Material   |
+|------------|-----------------|---------------|
+| Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) / [Workshop](./materials/workshop_01.ipynb) |
+| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop](./materials/workshop_02.ipynb) |
 
-[Link](url) and ![Image](src)
+
+## Grades
+
+คะแนนเต็ม 100 คะแนน โดยแบ่งออกเป็น
+- การสอบกลางภาค 30%
+- การสอบปลายภาค 30%
+- งานที่ได้รับมอบหมาย 10%
+- โครงงาน 20%
+
+หากนักศึกษาเข้าเรียนน้อยกว่า 80% ของเวลาเรียนทั้งหมด
+หรือได้คะแนนรวมน้อยกว่า 50% ของคะแนนเต็ม นักศึกษาจะไม่ผ่านในรายวิชานี้ และได้รับการบันทึกผลการเรียน F (เกรด 0.0) 
+
+สำหรับนักศึกษาที่ผ่านเกณฑ์ดังกล่าว จะได้รับการบันทึกผลการเรียนตามเกณฑ์ของคะแนน t-score 
+
 ```
+t-score = 50 + 10*(x - u)/s
+```
+เมื่อ x คือคะแนนรวม, u คือคะแนนเฉลี่ยของคะแนนรวม และ s คือส่วนเบี่ยงเบนมาตรฐานของคะแนนรวม
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+ดังนี้
 
-### Jekyll Themes
+| ผลการเรียน | เกรด | เกณฑ์ t-score |
+|---------|------|--------------|
+| F | 0.00 | (-Inf, 50) | 
+| D | 1.00 | [50, 55) | 
+| D+ | 1.50 | [55, 60) | 
+| C | 2.00 | [60, 65) |
+| C+ | 2.50 | [65, 70) |
+| B | 3.00 | [70, 75) |
+| B+ | 3.50 | [75, 80) |
+| A | 4.00 | [80, Inf) |
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/epsilonxe/RMUTT_09131201/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## References
 
-### Support or Contact
+- Steven C. Chapra and Raymond P. Canale, (2015) Numerical Methods for Engineers 7th edition, McGraw-Hill Education, 2Penn Plaza, New York.
+- Burden, R. L., & Faires, J. D. (2005). Numerical Analysis (8th ed.). Belmont, CA: Thompson Brooks/Cole.
+- ปราโมทย์ เดชะอำไพ และนิพนธ์ วรรณโสภาคย์, (2010) ระเบียบวิธีเชิงตัวเลขในงานวิศวกรรม, สำนักพิมพ์จุฬาลงกรณ์มหาวิทยาลัย
+- วรสิทธิ์ กาญจนกิจเกษม, (2014) ระเบียบวิธีเชิงตัวเลข, สำนักพิมพ์จุฬาลงกรณ์มหาวิทยาลัย
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
