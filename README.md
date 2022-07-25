@@ -7,7 +7,11 @@ Lecturers:
 
 ![Banner](./materials/banner.jpg)
 
+
+
 ## Schedules
+
+SEMESTER 1/2565
 
 | Section | Date    | Lecture  | Workshop |
 |---------|---------|----------|----------|
@@ -15,8 +19,11 @@ Lecturers:
 |  SEC02  | TUE     |ST1910 13.00 - 15.00 | ST1905 15.00 - 17.00 |
 |  SEC03  | TUE     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
 
+Quiz-1 Exam: TBA
 
 Midterm Exam: TBA
+
+Quiz-2 Exam: TBA
 
 Final Exam: TBA
 
@@ -31,7 +38,7 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 |    Topic   |   Description   |    Material   |
 |------------|-----------------|---------------|
 | Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) / [Workshop](./materials/workshop_01.ipynb) |
-| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop](./materials/workshop_02.ipynb) |
+| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop](./materials/workshop_02.ipynb) / [Solution](./solutions/workshop_01.ipynb) |
 
 
 ## Grades
