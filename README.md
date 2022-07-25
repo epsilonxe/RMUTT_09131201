@@ -41,8 +41,8 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 | Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop 02](./materials/workshop_02.ipynb) /  [Workshop 03](./materials/workshop_03.ipynb)|
 
 Solutions to selected workshops:
- - [Workshop 01](./solutions/workshop_01.ipynb)
- - [Workshop 02](./solutions/workshop_02.ipynb)
+ - [Solution for Workshop 01](./solutions/workshop_01.ipynb)
+ - [Solution for Workshop 02](./solutions/workshop_02.ipynb)
 
 ## Grades
 
