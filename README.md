@@ -37,8 +37,8 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 
 |    Topic   |   Description   |    Material   |
 |------------|-----------------|---------------|
-| Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) / [Workshop](./materials/workshop_01.ipynb) |
-| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop](./materials/workshop_02.ipynb) / [Solution](./solutions/workshop_01.ipynb) |
+| Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) / [Workshop 01](./materials/workshop_01.ipynb)  [Solution 01](./solutions/workshop_01.ipynb) |
+| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) / [Workshop 02](./materials/workshop_02.ipynb) /  [Workshop 03](./materials/workshop_03.ipynb)|
 
 
 ## Grades
