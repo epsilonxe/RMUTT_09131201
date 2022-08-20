@@ -39,7 +39,7 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 |------------|-----------------|---------------|
 | Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) <br> [Workshop 01](./materials/workshop_01.ipynb) |
 | Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 02](./materials/workshop_02.ipynb) <br>  [Workshop 03](./materials/workshop_03.ipynb)|
-| Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) |
+| Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 06](./materials/workshop_07.ipynb)|
 
 Solutions:
  - [Solution for Workshop 01](./solutions/workshop_01.ipynb)
