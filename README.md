@@ -13,19 +13,26 @@ Lecturers:
 
 SEMESTER 1/2565
 
-| Section | Date    | Lecture  | Workshop |
-|---------|---------|----------|----------|
-|  SEC01  | WED     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
-|  SEC02  | TUE     |ST1910 13.00 - 15.00 | ST1905 15.00 - 17.00 |
-|  SEC03  | TUE     |ST1910 08.00 - 10.00 | ST1905 10.00 - 12.00 |
+| Section | Date    | Lecture  | Workshop | D-Learn Enrollment Keys |
+|---------|---------|----------|----------|--------|
+|  SEC01  | WED     |08.00 - 10.00 | 10.00 - 12.00 | `Y65@NMC$s01` |
+|  SEC02  | TUE     |13.00 - 15.00 | 15.00 - 17.00 | `Y65@NMC$s02` |
+|  SEC03  | TUE     |08.00 - 10.00 | 10.00 - 12.00 | `Y65@NMC$s03` |
 
-Quiz-1 Exam: TBA
+- Lecture Classroom: ST1910
+- Workshop Classroom: ST1905
 
-Midterm Exam: TBA
+## Examinations
 
-Quiz-2 Exam: TBA
+Midterm Exam: 31 ส.ค. 2565 
 
-Final Exam: TBA
+Final Exam: 27 ต.ค. 2565
+
+ห้องสอบ ST1904 และ ST1905
+- SEC01 เวลา 09:00 - 12:00
+- SEC02 เวลา 13:00 - 16:00
+- SEC03 เวลา 17:00 - 20:00
+
 
 ## Course Description
 
