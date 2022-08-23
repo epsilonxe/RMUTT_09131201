@@ -13,7 +13,7 @@ Lecturers:
 
 SEMESTER 1/2565
 
-| Section | Date    | Lecture  | Workshop | D-Learn Enrollment Keys |
+| Section | Date    | Lecture  | Workshop | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Keys |
 |---------|---------|----------|----------|--------|
 |  SEC01  | WED     |08.00 - 10.00 | 10.00 - 12.00 | `Y65@NMC$s01` |
 |  SEC02  | TUE     |13.00 - 15.00 | 15.00 - 17.00 | `Y65@NMC$s02` |
