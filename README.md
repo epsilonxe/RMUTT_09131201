@@ -47,7 +47,7 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 | Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) <br> [Workshop 01](./materials/workshop_01.ipynb) |
 | Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 02](./materials/workshop_02.ipynb) <br>  [Workshop 03](./materials/workshop_03.ipynb)|
 | Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_03.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 07](./materials/workshop_07.ipynb)|
-| Least Squares Regression | สมการถดถอยอันดับสองน้อยที่สุด | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) |
+| Least Squares Regression | สมการถดถอยอันดับสองน้อยที่สุด | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
 
 Solutions:
  - [Solution for Workshop 01](./solutions/workshop_01.ipynb)
@@ -59,8 +59,8 @@ Solutions:
 คะแนนเต็ม 100 คะแนน โดยแบ่งออกเป็น
 - การสอบกลางภาค 30%
 - การสอบปลายภาค 30%
-- งานที่ได้รับมอบหมาย 10%
-- โครงงาน 20%
+- การสอบย่อย 20%
+- งานที่ได้รับมอบหมาย 20%
 
 หากนักศึกษาเข้าเรียนน้อยกว่า 80% ของเวลาเรียนทั้งหมด
 หรือได้คะแนนรวมน้อยกว่า 50% ของคะแนนเต็ม นักศึกษาจะไม่ผ่านในรายวิชานี้ และได้รับการบันทึกผลการเรียน F (เกรด 0.0) 
