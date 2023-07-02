@@ -8,30 +8,24 @@ Lecturers:
 ![Banner](./materials/banner.jpg)
 
 
-
 ## Schedules
 
-SEMESTER 1/2565
+SEMESTER 1/2566
 
 | Section | Date    | Lecture  | Workshop | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Keys |
 |---------|---------|----------|----------|--------|
-|  SEC01  | WED     |08.00 - 10.00 | 10.00 - 12.00 | `Y65@NMC$s01` |
-|  SEC02  | TUE     |13.00 - 15.00 | 15.00 - 17.00 | `Y65@NMC$s02` |
-|  SEC03  | TUE     |08.00 - 10.00 | 10.00 - 12.00 | `Y65@NMC$s03` |
+|  SEC01  | TUE     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `d2q057d` |
+|  SEC02  | TUE     |ST1910 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `6fzyujp` |
+|  SEC03  | WED     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `vv07swc` |
 
-- Lecture Classroom: ST1910
-- Workshop Classroom: ST1905
 
 ## Examinations
 
-Midterm Exam: 31 ส.ค. 2565 
-
-Final Exam: 27 ต.ค. 2565
-
-ห้องสอบ ST1904 และ ST1905
-- SEC01 เวลา 09:00 - 12:00
-- SEC02 เวลา 13:00 - 16:00
-- SEC03 เวลา 17:00 - 20:00
+| Section | MIDTERM | FINAL  | Location|
+|---------|---------|-------|---------|
+| SEC 01 | 28 สิงหาคม 2566 เวลา 09.00 - 12.00  | 30 ตุลาคม 2566 เวลา 13.00 - 16.00  | TBA |
+| SEC 02 | 28 สิงหาคม 2566 เวลา 09.00 - 12.00  | 30 ตุลาคม 2566 |  TBA |
+| SEC 03 | 28 สิงหาคม 2566 เวลา 13.00 - 16.00 | 30 ตุลาคม 2566 เวลา 09.00 - 12.00 | TBA |
 
 
 ## Course Description
@@ -49,10 +43,6 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 | Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_03.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 07](./materials/workshop_07.ipynb)|
 | Least Squares Regression | สมการถดถอยอันดับสองน้อยที่สุด | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
 
-Solutions:
- - [Solution for Workshop 01](./solutions/workshop_01.ipynb)
- - [Solution for Workshop 02](./solutions/workshop_02.ipynb)
- - [Solution for Workshop 03](./solutions/workshop_03.ipynb)
 
 ## Grades
 
@@ -91,4 +81,3 @@ t-score = 50 + 10*(x - u)/s
 - Burden, R. L., & Faires, J. D. (2005). Numerical Analysis (8th ed.). Belmont, CA: Thompson Brooks/Cole.
 - ปราโมทย์ เดชะอำไพ และนิพนธ์ วรรณโสภาคย์, (2010) ระเบียบวิธีเชิงตัวเลขในงานวิศวกรรม, สำนักพิมพ์จุฬาลงกรณ์มหาวิทยาลัย
 - วรสิทธิ์ กาญจนกิจเกษม, (2014) ระเบียบวิธีเชิงตัวเลข, สำนักพิมพ์จุฬาลงกรณ์มหาวิทยาลัย
-
