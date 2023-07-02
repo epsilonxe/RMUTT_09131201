@@ -12,11 +12,11 @@ Lecturers:
 
 SEMESTER 1/2566
 
-| Section | Date    | Lecture  | Workshop | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Keys |
-|---------|---------|----------|----------|--------|
-|  SEC01  | TUE     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `d2q057d` |
-|  SEC02  | TUE     |ST1910 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `6fzyujp` |
-|  SEC03  | WED     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `vv07swc` |
+| Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Key |
+|---------|---------|----------|----------|--------|---------|
+|  SEC01  | TUE     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `d2q057d` |   |
+|  SEC02  | TUE     |ST1910 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `6fzyujp` |   |
+|  SEC03  | WED     |ST1910 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `vv07swc` |   |
 
 
 ## Examinations
