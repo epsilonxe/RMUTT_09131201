@@ -42,8 +42,9 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 | Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 02](./materials/workshop_02.ipynb) <br>  [Workshop 03](./materials/workshop_03.ipynb)|
 | Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_03.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 07](./materials/workshop_07.ipynb)|
 | Regression | สมการถดถอย | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
-| Interpolation | การประมาณค่าในช่วง | [Lecture](./materials/lecture_05.pdf) <br> [Workshop 10](./materials/workshop_10.zip) <br> [Workshop 11](./materials/workshop_11.zip) |
-| Numerical Differentiation/Integration | อนุพันธ์และปริพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_06.pdf) <br> [Workshop 12](./materials/workshop_12.zip) <br> [Workshop 13](./materials/13.zip) |
+| Interpolation | การประมาณค่าในช่วง | [Lecture](./materials/lecture_05.pdf) <br> [Workshop 10](./materials/workshop_10.ipynb) <br> [Workshop 11](./materials/workshop_11.zip) |
+| Numerical Differentiation | อนุพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_06.pdf) <br> [Workshop 12](./materials/workshop_12.ipynb) |
+| Numerical Integration | ปริพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_07.pdf) <br> [Workshop 13](./materials/13.ipynb) |
 
 
 ## Grades
