@@ -44,7 +44,7 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 | Regression | สมการถดถอย | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
 | Interpolation | การประมาณค่าในช่วง | [Lecture](./materials/lecture_05.pdf) <br> [Workshop 10](./materials/workshop_10.ipynb) <br> [Workshop 11](./materials/workshop_11.zip) |
 | Numerical Differentiation | อนุพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_06.pdf) <br> [Workshop 12](./materials/workshop_12.ipynb) |
-| Numerical Integration | ปริพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_07.pdf) <br> [Workshop 13](./materials/13.ipynb) |
+| Numerical Integration | ปริพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_07.pdf) <br> [Workshop 13](./materials/workshop_13.ipynb) |
 
 
 ## Grades
