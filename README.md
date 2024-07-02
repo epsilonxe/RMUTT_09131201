@@ -14,9 +14,9 @@ SEMESTER 1/2567
 
 | Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Key |
 |---------|---------|----------|----------|--------|---------|
-|  SEC01  | TUE     |ST1910 เวลา 08.00 - 10.00 | TBA เวลา 10.00 - 12.00 | `45dqnlw` |   |
+|  SEC01  | TUE     |TBA เวลา 08.00 - 10.00 | TBA เวลา 10.00 - 12.00 | `45dqnlw` |   |
 |  SEC02  | TUE     |TBA เวลา 13.00 - 15.00 | TBA เวลา 15.00 - 17.00 | `fre2goj` |   |
-|  SEC03  | WED     | TBA เวลา 08.00 - 10.00 | TBA เวลา 10.00 - 12.00 | `p7f9786` |   |
+|  SEC03  | WED     | TBA เวลา 13.00 - 15.00 | TBA เวลา 15.00 - 17.00 | `p7f9786` |   |
 
 
 ## Examinations
