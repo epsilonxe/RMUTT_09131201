@@ -1,0 +1,21 @@
+\documentclass{beamer}
+
+\usepackage{pgfpages}
+\pgfpagesuselayout{4 on 1}
+\setbeamertemplate{navigation symbols}{}
+\usepackage{pdfpages}
+\setbeamertemplate{note page}[lined]
+\setbeameroption{show notes}
+
+\begin{document}
+    
+\includepdf[
+  pages=-,
+  pagecommand={
+    \AddToHookNext{shipout/after}{%
+      \note{{}}
+    }
+  }
+]{handout_01.pdf}
+    
+\end{document}

@@ -14,9 +14,9 @@ SEMESTER 1/2567
 
 | Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Key |
 |---------|---------|----------|----------|--------|---------|
-|  SEC01  | TUE     |TBA เวลา 08.00 - 10.00 | TBA เวลา 10.00 - 12.00 | `45dqnlw` |   |
-|  SEC02  | TUE     |TBA เวลา 13.00 - 15.00 | TBA เวลา 15.00 - 17.00 | `fre2goj` |   |
-|  SEC03  | WED     | TBA เวลา 13.00 - 15.00 | TBA เวลา 15.00 - 17.00 | `p7f9786` |   |
+|  SEC01  | TUE     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `45dqnlw` |   |
+|  SEC02  | TUE     |ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `fre2goj` |   |
+|  SEC03  | WED     | ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `p7f9786` |   |
 
 
 ## Examinations
@@ -35,15 +35,15 @@ Tools for numerical problem solving, error analysis, solutions of nonlinear equa
 
 ## Class Materials
 
-|    Topic   |   Description   |    Materials and Workshops   |
+|    Topic   |   Description   |    Material/Workshop   |
 |------------|-----------------|---------------|
-| Erorrs and Approximation | ค่าคลาดเคลื่อนและค่าประมาณ | [Lecture](./materials/lecture_01.pdf) <br> [Workshop 01](./materials/workshop_01.ipynb) |
-| Root Finding | รากของสมการ | [Lecture](./materials/lecture_02.pdf) <br> [Workshop 02](./materials/workshop_02.ipynb) <br>  [Workshop 03](./materials/workshop_03.ipynb)|
-| Systems of Linear Equations | ระบบสมการเชิงเส้น | [Lecture](./materials/lecture_03.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 07](./materials/workshop_07.ipynb)|
-| Regression | สมการถดถอย | [Lecture](./materials/lecture_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
-| Interpolation | การประมาณค่าในช่วง | [Lecture](./materials/lecture_05.pdf) <br> [Workshop 10](./materials/workshop_10.ipynb) <br> [Workshop 11](./materials/workshop_11.zip) |
-| Numerical Differentiation | อนุพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_06.pdf) <br> [Workshop 12](./materials/workshop_12.ipynb) |
-| Numerical Integration | ปริพันธ์เชิงตัวเลข | [Lecture](./materials/lecture_07.pdf) <br> [Workshop 13](./materials/workshop_13.ipynb) |
+| [Erorrs and Approximation](./materials/lecture_01.pdf) | ค่าคลาดเคลื่อนและค่าประมาณ | [Handout](./materials/handout_01.pdf) <br> [Workshop 01](./materials/workshop_01.ipynb) |
+| [Root Finding](./materials/lecture_02.pdf) | รากของสมการ | [Handout](./materials/handout_02.pdf) <br> [Workshop 02](./materials/workshop_02.ipynb) <br>  [Workshop 03](./materials/workshop_03.ipynb)|
+| [Systems of Linear Equations](./materials/lecture_03.pdf) | ระบบสมการเชิงเส้น | [Handout](./materials/handout_03.pdf) <br> [Workshop 04](./materials/workshop_04.ipynb) <br> [Workshop 05](./materials/workshop_05.ipynb) <br> [Workshop 06](./materials/workshop_06.ipynb) <br> [Workshop 07](./materials/workshop_07.ipynb)|
+| [Regression](./materials/lecture_04.pdf) | สมการถดถอย | [Handout](./materials/handout_04.pdf) <br> [Workshop 08](./materials/workshop_08.zip) <br> [Workshop 09](./materials/workshop_09.zip) |
+| [Interpolation](./materials/lecture_05.pdf) | การประมาณค่าในช่วง | [Handout](./materials/handout_05.pdf) <br> [Workshop 10](./materials/workshop_10.ipynb) <br> [Workshop 11](./materials/workshop_11.zip) |
+| [Numerical Differentiation](./materials/lecture_06.pdf) | อนุพันธ์เชิงตัวเลข | [Handout](./materials/handout_06.pdf) <br> [Workshop 12](./materials/workshop_12.ipynb) |
+| [Numerical Integration](./materials/lecture_07.pdf) | ปริพันธ์เชิงตัวเลข | [Handout](./materials/handout_07.pdf) <br> [Workshop 13](./materials/workshop_13.ipynb) |
 
 
 ## Grades
