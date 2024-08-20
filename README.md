@@ -12,11 +12,11 @@ Lecturers:
 
 SEMESTER 1/2567
 
-| Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2317) Key |
+| Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2318) Key |
 |---------|---------|----------|----------|--------|---------|
-|  SEC01  | TUE     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `45dqnlw` |   |
-|  SEC02  | TUE     |ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `fre2goj` |   |
-|  SEC03  | WED     | ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `p7f9786` |   |
+|  SEC01  | TUE     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | `45dqnlw` | `QAAT-BnDA-P1K8`  |
+|  SEC02  | TUE     |ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `fre2goj` | `NHFD-UsPS-K2L4`  |
+|  SEC03  | WED     | ST1905 เวลา 13.00 - 15.00 | ST1905 เวลา 15.00 - 17.00 | `p7f9786` | `NHYS-BbSD-J3A3`  |
 
 
 ## Examinations
