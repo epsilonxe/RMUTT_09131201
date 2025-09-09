@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Username Total Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full m-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">คะแนนสอบกลางภาค 1/2568</h1>
+            <p class="text-gray-500 mt-2">ข้าพเจ้ายืนยันว่าหมายเลขประจำตัวนักศึกษาที่กรอกเป็นของข้าพเจ้าเอง และยินยอมให้มีการประมวลผลข้อมูลส่วนบุคคลเพื่อตรวจสอบคะแนน</p>
+        </div>
+
+        <!-- Username Input Section -->
+        <div class="mb-4">
+            <label for="username-input" class="block text-sm font-medium text-gray-700">Student ID</label>
+            <input type="text" id="username-input" placeholder="e.g., 1167109051249" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+
+        <!-- Find Button -->
+        <button id="find-total-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
+            Find Total
+        </button>
+
+        <!-- Result Display Section -->
+        <div id="result-container" class="mt-8 text-center hidden">
+            <div class="p-6 bg-gray-50 rounded-lg">
+                <p id="user-name-output" class="text-2xl font-semibold text-gray-700 mb-2"></p>
+                <p class="text-lg text-gray-600">Total Score:</p>
+                <p id="result-output" class="text-4xl font-extrabold text-blue-600 mt-2">-</p>
+            </div>
+            
+            <!-- Normal Curve Chart -->
+            <div class="mt-6">
+                <canvas id="score-curve-canvas" width="500" height="250"></canvas>
+                <div class="text-sm text-gray-600 mt-2">
+                    <p>Class Average: <span id="avg-score" class="font-bold"></span></p>
+                    <p>Standard Deviation: <span id="std-dev" class="font-bold"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="mt-6 text-center text-red-600 font-medium hidden"></div>
+
+    </div>
+
+    <script>
+        // Store parsed CSV data globally
+        let csvData = [];
+        let scoreStats = { mean: 0, stdDev: 0 };
+        const fullScore = 46;
+        
+        // --- Hardcoded CSV data ---
+        const csvContent = `Username,First name,Surname,ID number,Institution,Department,Email address,รหัสนักศึกษา,Quiz,Total,Last downloaded from this course
+1167109051249,กฤตณัฐ,กัลยาณมงคล,,,,arkggopro@gmail.com,,4,4,1757395781
+1167109050233,จิรัชญา,ขำทรัพย์,,,,Jiratchayakhamsap@gmail.com,,7,7,1757395781
+1167109050084,พิทวัส,จันทร์แก้ว,,,,pitthawat99chankaew@gmail.com,,32,32,1757395781
+1167109051140,ธนชาต,จิตดี,,,,angpaojitdee49@gmail.com,,13,13,1757395781
+1167109050191,ศิรินภา,ทานอก,,,,nook.sirinapa36@gmail.com,,7,7,1757395781
+1167109050274,ภูดิศร,ทุเรียนงาม,,,,phudison2456@gmail.com,,17,17,1757395781
+1167109050365,รัชชานนท์,บางหลวง,,,,jj.bangluang@gmail.com,,23,23,1757395781
+1167109050282,ชินาธิป,มอญถนอม,,,,masterrichmyz2@gmail.com,,16,16,1757395781
+1167109050795,ภูมินทร์,มั่นหมาย,,,,phuin5333@gmail.com,,7,7,1757395781
+1167109050068,จิราพร,รุ่งโรจน์,,,,jipornn711@gmail.com,,23,23,1757395781
+1167109050126,ชนกันต์,สาขามุละ,,,,chanagan.mon@gmail.com,,20,20,1757395781
+1167109050092,กิตติศักดิ์,สุดสงวน,,,,KittisakJungs@gmail.com,,17,17,1757395781
+1167109050209,ณัฐนนท์,สุวรรณผา,,,,nattanonsuwannapha@gmail.com,,13,13,1757395781
+1167109050019,ธนโชติ,อ่อนศรี,,,,thanachot.onsri@gmail.com,,1,1,1757395781
+1167109050225,ปริยาภรณ์,อินทะรัง,,,,pari_2549@hotmail.com,,14,14,1757395781
+1167109050134,อาภัสรา,อุปฮาด,,,,mintarpasara@gmail.com,,10,10,1757395781
+1167109050035,จีรศักดิ์,เจริญผล,,,,jeerasak.jalernpon@gmail.com,,13,13,1757395781
+1167109051173,กันตพิชญ์,เชียงศรี,,,,gunthapich@gmail.com,,21,21,1757395781
+1167109050316,ณัฐวดี,เต๊ะวงษ์,,,,nattawadeetaewong3@gmail.com,,6,6,1757395781
+1167109051090,ปารเมศ,เปรมกระโทก,,,,permkrathoksuphatra@gmail.com,,9,9,1757395781
+1167109050811,ชนาธิป,แซ่อึ้ง,,,,chnathipsaexung@gmail.com,,16,16,1757395781
+1167109050308,ธนภัทร,แสงอินทร์,,,,koreak000444@gmail.com,,13,13,1757395781
+1167109051199,ชไมพร,โมฬีชาติ,,,,Chamaiporn2019treem@gmail.com,,12,12,1757395781
+1167109050399,ธนเทพ,กลิ่นฉาย,,,,poomg900@gmail.com,,6,6,1757395837
+1167109051082,ธนภัทร,กลิ่นหอม,,,,Klinhom2548@gmail.com,,14,14,1757395837
+1167109050449,ศิวกร,ขวัญสุข,,,,siwakon.no.2@gmail.com,,12,12,1757395837
+1167109050563,ธเนศ,ต้อยกระโทก,,,,thanettoykratok@gmail.com,,9,9,1757395837
+1167109050464,ก้องภพ,นิลกล่ำ,,,,Kongpk157@gmail.com,,16,16,1757395837
+1167109050951,สฤษฏ์พนธ์,พลายกุมพล,,,,Saritpon0537@gmail.com,,10,10,1757395837
+1167109050910,ณัฐิวุฒิ,พิมพ์ตะคลอง,,,,tlenatthiwut123@gmail.com,,14,14,1757395837
+1167109050514,ธนพร,พูลทราย,,,,pollypoolsai@gmail.com,,17,17,1757395837
+1167109051272,ลัทธพล,ยันประเวศ,,,,oathomey1@gmail.com,116710905127-2,12,12,1757395837
+1167109050522,ชาคริต,รอดมะณี,,,,chakritz12364@gmail.com,,15,15,1757395837
+1167109050555,ณัฐนันท์,ฤทธิ์ประเสริฐ,,,,youngritpra@gmail.com,116710905055-5,13,13,1757395837
+1167109050506,ศุภสิน,ศรีสวัสดิ์,,,,supasin371@gmail.com,,10,10,1757395837
+1167109050407,อนุชา,สุวรรณอัมพร,,,,c3v007@gmail.com,,10,10,1757395837
+1167109050985,ชลลดา,หมวดผา,,,,Rod554433@gmail.com,,6,6,1757395837
+1167109050498,มณิอร,อินทริง,,,,namjoonny48@gmail.com,,11,11,1757395837
+1167109051058,อัคษราภัค,อึ้งสวัสดิ์,,,,Gidgdofudvud@gmail.com,,11,11,1757395837
+1167109050571,วินัฐชา,อุดมสันติ์,,,,niceudomsan8@gmail.com,,8,8,1757395837
+1167109050381,อภิชญา,เขื่อนแก้ว,,,,nongkhueankaew1149@gmail.com,,12,12,1757395837
+1167109050746,ชินพัฒน์,เทวรักษ์พิทักษ์,,,,ppboy1235@gmail.com,,19,19,1757395837
+1167109050597,สิทธิศักดิ์,เพชรคำ,,,,nisaza9956@gmail.com,,8,8,1757395837
+1167109050423,ธงทอง,เพิ่มนิยมกิจ,,,,gamemerhacktvth@gmail.com,,17,17,1757395837
+1167109050860,ธนานันท์,เพิ่มผล,,,,Ktonm608@gmail.com,,9,9,1757395837
+1167109050969,อาทิตยา,เพียงลิ้ม,,,,arthittaya.phianglim@gmail.com,,6,6,1757395837
+1167109050472,ชวกร,เลียดรักษ์,,,,looklekky.1@gmail.com,,19,19,1757395837
+1167109050373,วทัญญู,เสริมสุขวัฒนกุล,,,,biwza_2@hotmail.com,,14,14,1757395837
+1163109051248,เตชินท์,เอียดรัตน์,,,,tashinmax42@gmail.com,,8,8,1757395837
+1167109050944,อภินพ,แก้วประเสริฐ,,,,pete.chan1230@gmail.com,,19,19,1757395837
+1167109050886,พีรวัส,แป้นมุข,,,,pee202548@gmail.com,,16,16,1757395837
+1167109050902,ทาริกา,แป๊ะหลี,,,,tpealee41@gmail.com,,9,9,1757395837
+1167109050928,นัยน์ปพร,ไชยแสง,,,,naiphapond11@gmail.com,,6,6,1757395837
+1167109051116,ภัทรพล,คำสมบัติ,,,,maungthong2023@gmail.com,,13,13,1757395913
+1167109050647,ภูวนัย,คุ่ยจาด,,,,meezat1458@gmail.com,,11,11,1757395913
+1167109050829,ณัชพล,งามสกุลธิติ,,,,nutchapol_001@outlook.com,,10,10,1757395913
+1167109050704,จิรเมธ,จุ้ยกำจร,,,,jirameth.juikumjorn@gmail.com,,20,20,1757395913
+1167109050936,ยศพนธ์,ชมชิด,,,,yodsapon062549@gmail.com,,26,26,1757395913
+1167109051017,โสริยา,ซุน,,,,soriyazun725@gmail.com,,9,9,1757395913
+1167109051207,เอกรินทร์,ทรัพย์เสรี,,,,eakarinohm1@gmail.com,,14,14,1757395913
+1167109050787,กฤตยาพร,บุญเหลือ,,,,nattida19945@gmail.com,,14,14,1757395913
+1167109050712,สราวุฒิ,พรมโคตร,,,,sack15sarawut@gmail.com,,9,9,1757395913
+1167109051033,ศิริเพ็ญ,พลสำโรง,,,,tonsai260@gmail.com,,18,18,1757395913
+1167109050779,วรวุฒิ,พวงมาลัย,,,,tersonsin006@gmail.com,,18,18,1757395913
+1167109050720,ธราธร,รัตนาเหล่าถาวร,,,,palmkatik19@gmail.com,,29,29,1757395913
+1167109050662,ปัญญสิริย์,ลี้ธัญญคมสกุล,,,,panyasiri142587@gmail.com,,12,12,1757395913
+1167109050845,ฉัตรทกาณ,วิชัยขัตฆะ,,,,chatthakan0924079819@gmail.com,,10,10,1757395913
+1167109050621,ศิรพัฒ,ศรัทธาธรรม,,,,kaowjaow35.207@gmail.com,,16,16,1757395913
+1167109051074,นวรัตน์,ศรีเมือง,,,,nawarat.ploy49@gmail.com,,7,7,1757395913
+1165109051219,ต้นน้ำ,ศุภศรี,,,,agarfoxy@gmail.com,,15,15,1757395913
+1167109050738,ธนวิชญ์,สร้อยกล่อม,,,,puppangpond@gmail.com,,14,14,1757395913
+1167109051108,สุทิน,สวงโท,,,,golfsutin549@gmail.com,,14,14,1757395913
+1165109051201,ปิยวัฒน์,สวยรูป,,,,equality.biz@gmail.com,,10,10,1757395913
+1167109050852,กิตติภพ,สังข์วิเศษ,,,,rikimaruunfaded@gmail.com,,17,17,1757395913
+1164109050990,เจตนิพัทธ์,สาทอง,,,,pou68f7e3449a51@gmail.com,,-,-,1757395913
+1167109050654,ณภัทร,สำราญพิศ,,,,tannoytv38@gmail.com,,16,16,1757395913
+1167109050639,ปัญจพล,สุวรรณรังษี,,,,suwan.panjapol@gmail.com,,21,21,1757395913
+1167109050605,อรปรียา,อำนาจ,,,,aonppreeyaa@gmail.com,,8,8,1757395913
+1167109051041,กฤตานนท์,อ่ำเล็ก,,,,kittanonaumlek@gmail.com,,10,10,1757395913
+1167109050613,พศิน,เพิงระนัย,,,,cowchingchuxsaendi@gmail.com,,20,20,1757395913
+1167109050878,ศษิธร,เรืองไกรศิลป์,,,,sasithonrueangkrisin@gmail.com,,14,14,1757395913
+1167109051124,ศิวกรณ์,เอี่ยมทองคำ,,,,kaynsvk@gmail.com,,13,13,1757395913
+1167109050977,ภัทรพล,แก้วเจริญ,,,,pattarapolkeawjarean@gmail.com,,13,13,1757395913
+1167109051157,อาทิตย์,แอมรัมย์,,,,man5566w@gmail.com,,8,8,1757395913
+1167109050837,ดวงพร,โสมศรีแก้ว,,,,duangpornsomsrikaew@gmail.com,,12,12,1757395913
+1167109050894,รชต,ใยอ่อน,,,,dark.of.ashura@gmail.com,,19,19,1757395913
+`;
+
+        const usernameInput = document.getElementById('username-input');
+        const findButton = document.getElementById('find-total-btn');
+        const resultContainer = document.getElementById('result-container');
+        const resultOutput = document.getElementById('result-output');
+        const userNameOutput = document.getElementById('user-name-output');
+        const errorMessage = document.getElementById('error-message');
+        const canvas = document.getElementById('score-curve-canvas');
+        const avgScoreEl = document.getElementById('avg-score');
+        const stdDevEl = document.getElementById('std-dev');
+
+        /**
+         * Parses the text content of a CSV string.
+         */
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== ''); 
+            if (lines.length < 2) { showError("CSV data is empty or invalid."); return; }
+            const headers = lines[0].split(',');
+            const usernameIndex = headers.indexOf('Username');
+            const totalIndex = headers.indexOf('Total');
+            const firstNameIndex = headers.indexOf('First name');
+            const surnameIndex = headers.indexOf('Surname');
+
+            if(usernameIndex === -1 || totalIndex === -1 || firstNameIndex === -1 || surnameIndex === -1) { 
+                showError("CSV must have 'Username', 'Total', 'First name', and 'Surname' columns."); 
+                return; 
+            }
+            csvData = lines.slice(1).map(line => {
+                const data = line.split(',');
+                return { 
+                    Username: data[usernameIndex]?.trim(), 
+                    Total: data[totalIndex]?.trim(),
+                    FirstName: data[firstNameIndex]?.trim(),
+                    Surname: data[surnameIndex]?.trim()
+                };
+            });
+        }
+        
+        /**
+         * Calculates the mean and standard deviation of the scores.
+         */
+        function calculateStatistics() {
+            const scores = csvData.map(row => Number(row.Total)).filter(score => !isNaN(score));
+            if (scores.length === 0) return;
+            
+            const mean = scores.reduce((acc, val) => acc + val, 0) / scores.length;
+            const variance = scores.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / scores.length;
+            const stdDev = Math.sqrt(variance);
+
+            scoreStats = { mean, stdDev };
+            avgScoreEl.textContent = mean.toFixed(2);
+            stdDevEl.textContent = stdDev.toFixed(2);
+        }
+
+        // --- Event Listener to parse data when the page loads ---
+        document.addEventListener('DOMContentLoaded', () => {
+            parseCSV(csvContent);
+            calculateStatistics();
+        });
+
+        // --- Event Listener for Find Button ---
+        findButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (!username) { showError("Please enter a username."); return; }
+            hideError();
+
+            const userRecord = csvData.find(row => row.Username === username);
+
+            if (userRecord) {
+                userNameOutput.textContent = `${userRecord.FirstName} ${userRecord.Surname}`;
+                resultOutput.textContent = `${userRecord.Total || 'N/A'} / ${fullScore}`;
+                showResult();
+                drawNormalCurve(Number(userRecord.Total));
+            } else {
+                showError(`Username "${username}" not found.`);
+                hideResult();
+            }
+        });
+        
+        usernameInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') { event.preventDefault(); findButton.click(); }
+        });
+
+        /**
+         * Draws the normal distribution curve on the canvas.
+         * @param {number} userScore - The score of the current user.
+         */
+        function drawNormalCurve(userScore) {
+            const ctx = canvas.getContext('2d');
+            const { width, height } = canvas;
+            ctx.clearRect(0, 0, width, height);
+
+            const { mean, stdDev } = scoreStats;
+            if (stdDev === 0) return;
+
+            const padding = 50;
+            const chartWidth = width - padding * 2;
+            const chartHeight = height - padding;
+            
+            // Function to map a score to an X coordinate
+            const getX = (score) => padding + (score / fullScore) * chartWidth;
+
+            // Function for the normal distribution PDF
+            const pdf = (x) => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
+            const maxPdf = pdf(mean); // Peak of the curve
+
+            // Draw the curve
+            ctx.beginPath();
+            ctx.moveTo(getX(0), height - padding / 2);
+            for (let score = 0; score <= fullScore; score += 0.5) {
+                const x = getX(score);
+                const y = (height - padding / 2) - (pdf(score) / maxPdf) * (chartHeight * 0.9);
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#3b82f6'; // Blue
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding / 2);
+            ctx.lineTo(width - padding, height - padding / 2);
+            ctx.strokeStyle = '#9ca3af'; // Gray
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Helper to draw lines and text
+            const drawMarker = (score, color, text, isUser = false) => {
+                const x = getX(score);
+                ctx.beginPath();
+                ctx.moveTo(x, height - padding / 2);
+                ctx.lineTo(x, padding / 2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = isUser ? 2 : 1;
+                ctx.setLineDash(isUser ? [] : [5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(text, x, padding / 2 - 5);
+            };
+
+            // Draw markers
+            drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(1)}`);
+            drawMarker(userScore, '#ef4444', `You: ${userScore}`, true);
+
+            // Add axis labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px Inter';
+            ctx.fillText('0', padding, height - padding / 2 + 15);
+            ctx.fillText(String(fullScore), width - padding, height - padding/2 + 15);
+        }
+
+        // --- UI Helper Functions ---
+        function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); }
+        function hideError() { if (!errorMessage.classList.contains('hidden')) { errorMessage.classList.add('hidden'); } }
+        function showResult() { if (resultContainer.classList.contains('hidden')) { resultContainer.classList.remove('hidden'); } }
+        function hideResult() { 
+            if (!resultContainer.classList.contains('hidden')) { 
+                resultContainer.classList.add('hidden'); 
+            } 
+            resultOutput.textContent = '-';
+            userNameOutput.textContent = '';
+        }
+    </script>
+</body>
+</html>
+
