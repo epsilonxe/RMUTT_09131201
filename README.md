@@ -3,7 +3,6 @@ Offical Repository of RMUTT 09131201 Numerical Methods for Computers
 
 Lecturers:
  - Ratthaprom Promkam, Dr.rer.nat.
- - Wongwisarut Kuangsatung, Asst.Prof.Dr.
 
 ![Banner](./materials/banner.jpg)
 
