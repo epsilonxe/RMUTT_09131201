@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Username Total Finder</title>
+    <title>Student Score Finder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+        }
+        /* Style for disabled button */
+        .disabled-button {
+            background-color: #d1d5db; /* gray-300 */
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -16,34 +21,57 @@
 
     <div class="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full m-4">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">คะแนนสอบกลางภาค 1/2568</h1>
-            <p class="text-gray-500 mt-2">ข้าพเจ้ายืนยันว่าหมายเลขประจำตัวนักศึกษาที่กรอกเป็นของข้าพเจ้าเอง และยินยอมให้มีการประมวลผลข้อมูลส่วนบุคคลเพื่อตรวจสอบคะแนน</p>
+            <h1 class="text-3xl font-bold text-gray-800">ประกาศคะแนนสอบ 1/2568</h1>
         </div>
 
-        <!-- Username Input Section -->
+        <!-- Student ID Input Section -->
         <div class="mb-4">
-            <label for="username-input" class="block text-sm font-medium text-gray-700">Student ID</label>
-            <input type="text" id="username-input" placeholder="e.g., 1167109051249" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+            <label for="studentid-input" class="block text-sm font-medium text-gray-700">Student ID</label>
+            <input type="text" id="studentid-input" placeholder="e.g., 1167109051249" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+
+        <!-- PDPA Consent Checkbox -->
+        <div class="mb-6 flex items-start">
+            <div class="flex items-center h-5">
+                <input id="pdpa-consent" name="pdpa-consent" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="pdpa-consent" class="text-gray-600">ข้าพเจ้ายืนยันว่าหมายเลขประจำตัวนักศึกษาที่กรอกเป็นของข้าพเจ้าเอง และยินยอมให้มีการประมวลผลข้อมูลส่วนบุคคลเพื่อตรวจสอบคะแนน</label>
+            </div>
         </div>
 
         <!-- Find Button -->
-        <button id="find-total-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md">
-            Find Total
+        <button id="find-scores-btn" disabled class="w-full text-white font-bold py-3 px-4 rounded-lg transition-transform transform shadow-md disabled-button">
+            ค้นหาคะแนน
         </button>
 
         <!-- Result Display Section -->
-        <div id="result-container" class="mt-8 text-center hidden">
+        <div id="result-container" class="mt-8 hidden">
             <div class="p-6 bg-gray-50 rounded-lg">
-                <p id="user-name-output" class="text-2xl font-semibold text-gray-700 mb-2"></p>
-                <p class="text-lg text-gray-600">Total Score:</p>
-                <p id="result-output" class="text-4xl font-extrabold text-blue-600 mt-2">-</p>
+                <p id="user-name-output" class="text-2xl font-semibold text-gray-700 mb-4 text-center"></p>
+                
+                <!-- Scores Table -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Midterm Score</span>
+                        <span id="midterm-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Quiz Score</span>
+                        <span id="quiz-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
+                        <span class="font-bold text-blue-700">Total Score</span>
+                        <span id="total-score" class="text-3xl font-extrabold text-blue-600">-</span>
+                    </div>
+                </div>
             </div>
             
             <!-- Normal Curve Chart -->
-            <div class="mt-6">
+            <div class="mt-6 text-center">
                 <canvas id="score-curve-canvas" width="500" height="250"></canvas>
                 <div class="text-sm text-gray-600 mt-2">
-                    <p>Class Average: <span id="avg-score" class="font-bold"></span></p>
+                    <p>Class Average (Total): <span id="avg-score" class="font-bold"></span></p>
                     <p>Standard Deviation: <span id="std-dev" class="font-bold"></span></p>
                 </div>
             </div>
@@ -58,103 +86,119 @@
         // Store parsed CSV data globally
         let csvData = [];
         let scoreStats = { mean: 0, stdDev: 0 };
-        const fullScore = 46;
+        // Define full scores
+        const fullMidtermScore = 46;
+        const fullQuizScore = 30;
+        const fullScore = fullMidtermScore + fullQuizScore;
         
-        // --- Hardcoded CSV data ---
-        const csvContent = `Username,First name,Surname,ID number,Institution,Department,Email address,รหัสนักศึกษา,Quiz,Total,Last downloaded from this course
-1167109051249,กฤตณัฐ,กัลยาณมงคล,,,,arkggopro@gmail.com,,4,4,1757395781
-1167109050233,จิรัชญา,ขำทรัพย์,,,,Jiratchayakhamsap@gmail.com,,7,7,1757395781
-1167109050084,พิทวัส,จันทร์แก้ว,,,,pitthawat99chankaew@gmail.com,,32,32,1757395781
-1167109051140,ธนชาต,จิตดี,,,,angpaojitdee49@gmail.com,,13,13,1757395781
-1167109050191,ศิรินภา,ทานอก,,,,nook.sirinapa36@gmail.com,,7,7,1757395781
-1167109050274,ภูดิศร,ทุเรียนงาม,,,,phudison2456@gmail.com,,17,17,1757395781
-1167109050365,รัชชานนท์,บางหลวง,,,,jj.bangluang@gmail.com,,23,23,1757395781
-1167109050282,ชินาธิป,มอญถนอม,,,,masterrichmyz2@gmail.com,,16,16,1757395781
-1167109050795,ภูมินทร์,มั่นหมาย,,,,phuin5333@gmail.com,,7,7,1757395781
-1167109050068,จิราพร,รุ่งโรจน์,,,,jipornn711@gmail.com,,23,23,1757395781
-1167109050126,ชนกันต์,สาขามุละ,,,,chanagan.mon@gmail.com,,20,20,1757395781
-1167109050092,กิตติศักดิ์,สุดสงวน,,,,KittisakJungs@gmail.com,,17,17,1757395781
-1167109050209,ณัฐนนท์,สุวรรณผา,,,,nattanonsuwannapha@gmail.com,,13,13,1757395781
-1167109050019,ธนโชติ,อ่อนศรี,,,,thanachot.onsri@gmail.com,,1,1,1757395781
-1167109050225,ปริยาภรณ์,อินทะรัง,,,,pari_2549@hotmail.com,,14,14,1757395781
-1167109050134,อาภัสรา,อุปฮาด,,,,mintarpasara@gmail.com,,10,10,1757395781
-1167109050035,จีรศักดิ์,เจริญผล,,,,jeerasak.jalernpon@gmail.com,,13,13,1757395781
-1167109051173,กันตพิชญ์,เชียงศรี,,,,gunthapich@gmail.com,,21,21,1757395781
-1167109050316,ณัฐวดี,เต๊ะวงษ์,,,,nattawadeetaewong3@gmail.com,,6,6,1757395781
-1167109051090,ปารเมศ,เปรมกระโทก,,,,permkrathoksuphatra@gmail.com,,9,9,1757395781
-1167109050811,ชนาธิป,แซ่อึ้ง,,,,chnathipsaexung@gmail.com,,16,16,1757395781
-1167109050308,ธนภัทร,แสงอินทร์,,,,koreak000444@gmail.com,,13,13,1757395781
-1167109051199,ชไมพร,โมฬีชาติ,,,,Chamaiporn2019treem@gmail.com,,12,12,1757395781
-1167109050399,ธนเทพ,กลิ่นฉาย,,,,poomg900@gmail.com,,6,6,1757395837
-1167109051082,ธนภัทร,กลิ่นหอม,,,,Klinhom2548@gmail.com,,14,14,1757395837
-1167109050449,ศิวกร,ขวัญสุข,,,,siwakon.no.2@gmail.com,,12,12,1757395837
-1167109050563,ธเนศ,ต้อยกระโทก,,,,thanettoykratok@gmail.com,,9,9,1757395837
-1167109050464,ก้องภพ,นิลกล่ำ,,,,Kongpk157@gmail.com,,16,16,1757395837
-1167109050951,สฤษฏ์พนธ์,พลายกุมพล,,,,Saritpon0537@gmail.com,,10,10,1757395837
-1167109050910,ณัฐิวุฒิ,พิมพ์ตะคลอง,,,,tlenatthiwut123@gmail.com,,14,14,1757395837
-1167109050514,ธนพร,พูลทราย,,,,pollypoolsai@gmail.com,,17,17,1757395837
-1167109051272,ลัทธพล,ยันประเวศ,,,,oathomey1@gmail.com,116710905127-2,12,12,1757395837
-1167109050522,ชาคริต,รอดมะณี,,,,chakritz12364@gmail.com,,15,15,1757395837
-1167109050555,ณัฐนันท์,ฤทธิ์ประเสริฐ,,,,youngritpra@gmail.com,116710905055-5,13,13,1757395837
-1167109050506,ศุภสิน,ศรีสวัสดิ์,,,,supasin371@gmail.com,,10,10,1757395837
-1167109050407,อนุชา,สุวรรณอัมพร,,,,c3v007@gmail.com,,10,10,1757395837
-1167109050985,ชลลดา,หมวดผา,,,,Rod554433@gmail.com,,6,6,1757395837
-1167109050498,มณิอร,อินทริง,,,,namjoonny48@gmail.com,,11,11,1757395837
-1167109051058,อัคษราภัค,อึ้งสวัสดิ์,,,,Gidgdofudvud@gmail.com,,11,11,1757395837
-1167109050571,วินัฐชา,อุดมสันติ์,,,,niceudomsan8@gmail.com,,8,8,1757395837
-1167109050381,อภิชญา,เขื่อนแก้ว,,,,nongkhueankaew1149@gmail.com,,12,12,1757395837
-1167109050746,ชินพัฒน์,เทวรักษ์พิทักษ์,,,,ppboy1235@gmail.com,,19,19,1757395837
-1167109050597,สิทธิศักดิ์,เพชรคำ,,,,nisaza9956@gmail.com,,8,8,1757395837
-1167109050423,ธงทอง,เพิ่มนิยมกิจ,,,,gamemerhacktvth@gmail.com,,17,17,1757395837
-1167109050860,ธนานันท์,เพิ่มผล,,,,Ktonm608@gmail.com,,9,9,1757395837
-1167109050969,อาทิตยา,เพียงลิ้ม,,,,arthittaya.phianglim@gmail.com,,6,6,1757395837
-1167109050472,ชวกร,เลียดรักษ์,,,,looklekky.1@gmail.com,,19,19,1757395837
-1167109050373,วทัญญู,เสริมสุขวัฒนกุล,,,,biwza_2@hotmail.com,,14,14,1757395837
-1163109051248,เตชินท์,เอียดรัตน์,,,,tashinmax42@gmail.com,,8,8,1757395837
-1167109050944,อภินพ,แก้วประเสริฐ,,,,pete.chan1230@gmail.com,,19,19,1757395837
-1167109050886,พีรวัส,แป้นมุข,,,,pee202548@gmail.com,,16,16,1757395837
-1167109050902,ทาริกา,แป๊ะหลี,,,,tpealee41@gmail.com,,9,9,1757395837
-1167109050928,นัยน์ปพร,ไชยแสง,,,,naiphapond11@gmail.com,,6,6,1757395837
-1167109051116,ภัทรพล,คำสมบัติ,,,,maungthong2023@gmail.com,,13,13,1757395913
-1167109050647,ภูวนัย,คุ่ยจาด,,,,meezat1458@gmail.com,,11,11,1757395913
-1167109050829,ณัชพล,งามสกุลธิติ,,,,nutchapol_001@outlook.com,,10,10,1757395913
-1167109050704,จิรเมธ,จุ้ยกำจร,,,,jirameth.juikumjorn@gmail.com,,20,20,1757395913
-1167109050936,ยศพนธ์,ชมชิด,,,,yodsapon062549@gmail.com,,26,26,1757395913
-1167109051017,โสริยา,ซุน,,,,soriyazun725@gmail.com,,9,9,1757395913
-1167109051207,เอกรินทร์,ทรัพย์เสรี,,,,eakarinohm1@gmail.com,,14,14,1757395913
-1167109050787,กฤตยาพร,บุญเหลือ,,,,nattida19945@gmail.com,,14,14,1757395913
-1167109050712,สราวุฒิ,พรมโคตร,,,,sack15sarawut@gmail.com,,9,9,1757395913
-1167109051033,ศิริเพ็ญ,พลสำโรง,,,,tonsai260@gmail.com,,18,18,1757395913
-1167109050779,วรวุฒิ,พวงมาลัย,,,,tersonsin006@gmail.com,,18,18,1757395913
-1167109050720,ธราธร,รัตนาเหล่าถาวร,,,,palmkatik19@gmail.com,,29,29,1757395913
-1167109050662,ปัญญสิริย์,ลี้ธัญญคมสกุล,,,,panyasiri142587@gmail.com,,12,12,1757395913
-1167109050845,ฉัตรทกาณ,วิชัยขัตฆะ,,,,chatthakan0924079819@gmail.com,,10,10,1757395913
-1167109050621,ศิรพัฒ,ศรัทธาธรรม,,,,kaowjaow35.207@gmail.com,,16,16,1757395913
-1167109051074,นวรัตน์,ศรีเมือง,,,,nawarat.ploy49@gmail.com,,7,7,1757395913
-1165109051219,ต้นน้ำ,ศุภศรี,,,,agarfoxy@gmail.com,,15,15,1757395913
-1167109050738,ธนวิชญ์,สร้อยกล่อม,,,,puppangpond@gmail.com,,14,14,1757395913
-1167109051108,สุทิน,สวงโท,,,,golfsutin549@gmail.com,,14,14,1757395913
-1165109051201,ปิยวัฒน์,สวยรูป,,,,equality.biz@gmail.com,,10,10,1757395913
-1167109050852,กิตติภพ,สังข์วิเศษ,,,,rikimaruunfaded@gmail.com,,17,17,1757395913
-1164109050990,เจตนิพัทธ์,สาทอง,,,,pou68f7e3449a51@gmail.com,,-,-,1757395913
-1167109050654,ณภัทร,สำราญพิศ,,,,tannoytv38@gmail.com,,16,16,1757395913
-1167109050639,ปัญจพล,สุวรรณรังษี,,,,suwan.panjapol@gmail.com,,21,21,1757395913
-1167109050605,อรปรียา,อำนาจ,,,,aonppreeyaa@gmail.com,,8,8,1757395913
-1167109051041,กฤตานนท์,อ่ำเล็ก,,,,kittanonaumlek@gmail.com,,10,10,1757395913
-1167109050613,พศิน,เพิงระนัย,,,,cowchingchuxsaendi@gmail.com,,20,20,1757395913
-1167109050878,ศษิธร,เรืองไกรศิลป์,,,,sasithonrueangkrisin@gmail.com,,14,14,1757395913
-1167109051124,ศิวกรณ์,เอี่ยมทองคำ,,,,kaynsvk@gmail.com,,13,13,1757395913
-1167109050977,ภัทรพล,แก้วเจริญ,,,,pattarapolkeawjarean@gmail.com,,13,13,1757395913
-1167109051157,อาทิตย์,แอมรัมย์,,,,man5566w@gmail.com,,8,8,1757395913
-1167109050837,ดวงพร,โสมศรีแก้ว,,,,duangpornsomsrikaew@gmail.com,,12,12,1757395913
-1167109050894,รชต,ใยอ่อน,,,,dark.of.ashura@gmail.com,,19,19,1757395913
+        // --- Hardcoded CSV data in the new format ---
+        const csvContent = `studentid,firstname,surname,mid_score,quiz_score
+1167109050399,ธนเทพ,กลิ่นฉาย,6,4
+1167109051082,ธนภัทร,กลิ่นหอม,14,6
+1167109051249,กฤตณัฐ,กัลยาณมงคล,4,-
+1167109050449,ศิวกร,ขวัญสุข,12,5
+1167109050233,จิรัชญา,ขำทรัพย์,7,-
+1167109051116,ภัทรพล,คำสมบัติ,13,3
+1167109050647,ภูวนัย,คุ่ยจาด,11,16
+1167109050829,ณัชพล,งามสกุลธิติ,10,5
+1167109050084,พิทวัส,จันทร์แก้ว,32,26
+1167109051140,ธนชาต,จิตดี,13,7
+1167109050704,จิรเมธ,จุ้ยกำจร,20,5
+1167109050936,ยศพนธ์,ชมชิด,26,20
+1167109051017,โสริยา,ซุน,9,6
+1167109050563,ธเนศ,ต้อยกระโทก,9,5
+1167109051207,เอกรินทร์,ทรัพย์เสรี,14,1
+1167109050191,ศิรินภา,ทานอก,7,-
+1167109050274,ภูดิศร,ทุเรียนงาม,17,18
+1167109050464,ก้องภพ,นิลกล่ำ,16,13
+1167109050365,รัชชานนท์,บางหลวง,23,16
+1167109050787,กฤตยาพร,บุญเหลือ,14,6
+1166109010148,กันธิชา,พงษ์จันทร์,19,21
+1167109050712,สราวุฒิ,พรมโคตร,9,2
+1167109051033,ศิริเพ็ญ,พลสำโรง,18,18
+1167109050951,สฤษฏ์พนธ์,พลายกุมพล,10,5
+1167109050779,วรวุฒิ,พวงมาลัย,18,16
+1167109050910,ณัฐิวุฒิ,พิมพ์ตะคลอง,14,9
+1167109050514,ธนพร,พูลทราย,17,7
+1167109050282,ชินาธิป,มอญถนอม,16,4
+1167109050795,ภูมินทร์,มั่นหมาย,7,16
+1166109010049,ชัยสิทธิ์,มิ่งละเอียด,13,6
+1167109051272,ลัทธพล,ยันประเวศ,12,22
+1167109051280,เพิร์ธ,ร่มโพธิ์,2,28
+1167109050522,ชาคริต,รอดมะณี,15,3
+1167109050720,ธราธร,รัตนาเหล่าถาวร,29,18
+1167109050068,จิราพร,รุ่งโรจน์,23,23
+1167109050555,ณัฐนันท์,ฤทธิ์ประเสริฐ,13,20
+1167109050662,ปัญญสิริย์,ลี้ธัญญคมสกุล,12,4
+1167109050845,ฉัตรทกาณ,วิชัยขัตฆะ,10,4
+1167109050621,ศิรพัฒ,ศรัทธาธรรม,16,23
+1167109050506,ศุภสิน,ศรีสวัสดิ์,10,5
+1167109051074,นวรัตน์,ศรีเมือง,7,4
+1165109051219,ต้นน้ำ,ศุภศรี,15,28
+1166109010072,ปรัชญา,สมสวย,29,26
+1167109050738,ธนวิชญ์,สร้อยกล่อม,14,18
+1167109051108,สุทิน,สวงโท,14,6
+1165109051201,ปิยวัฒน์,สวยรูป,10,2
+1167109050852,กิตติภพ,สังข์วิเศษ,17,27
+1167109050126,ชนกันต์,สาขามุละ,20,5
+1164109050990,เจตนิพัทธ์,สาทอง,-,10
+1167109050654,ณภัทร,สำราญพิศ,16,1
+1167109050092,กิตติศักดิ์,สุดสงวน,17,4
+1167109050209,ณัฐนนท์,สุวรรณผา,13,4
+1167109050639,ปัญจพล,สุวรรณรังษี,21,9
+1167109050407,อนุชา,สุวรรณอัมพร,10,2
+1167109050985,ชลลดา,หมวดผา,6,5
+1167109050019,ธนโชติ,อ่อนศรี,1,-
+1167109050605,อรปรียา,อำนาจ,8,5
+1167109051041,กฤตานนท์,อ่ำเล็ก,10,4
+1167109050498,มณิอร,อินทริง,11,4
+1167109050225,ปริยาภรณ์,อินทะรัง,14,9
+1167109051058,อัคษราภัค,อึ้งสวัสดิ์,11,2
+1167109050571,วินัฐชา,อุดมสันติ์,8,4
+1167109050134,อาภัสรา,อุปฮาด,10,8
+1166109010122,นิคม,เกิดอรุณ,16,5
+1167109050381,อภิชญา,เขื่อนแก้ว,12,5.5
+1167109050035,จีรศักดิ์,เจริญผล,13,13
+1167109051173,กันตพิชญ์,เชียงศรี,21,25
+1167109050316,ณัฐวดี,เต๊ะวงษ์,6,-
+1167109050746,ชินพัฒน์,เทวรักษ์พิทักษ์,19,3
+1167109051090,ปารเมศ,เปรมกระโทก,9,4
+1167109050597,สิทธิศักดิ์,เพชรคำ,8,5
+1167109050613,พศิน,เพิงระนัย,20,17
+1167109050423,ธงทอง,เพิ่มนิยมกิจ,17,21
+1167109050860,ธนานันท์,เพิ่มผล,9,4
+1167109050969,อาทิตยา,เพียงลิ้ม,6,5
+1167109050878,ศษิธร,เรืองไกรศิลป์,14,6
+1167109050472,ชวกร,เลียดรักษ์,19,5
+1167109050373,วทัญญู,เสริมสุขวัฒนกุล,14,24
+1166109010114,ศิโรรัตน์,เหลืองหิรัญ,32,24
+1163109051248,เตชินท์,เอียดรัตน์,8,1
+1167109051124,ศิวกรณ์,เอี่ยมทองคำ,13,7
+1167109050944,อภินพ,แก้วประเสริฐ,19,14
+1166109010155,วงศกร,แก้วสุวรรณ,18,5
+1167109050977,ภัทรพล,แก้วเจริญ,13,3
+1167109050811,ชนาธิป,แซ่อึ้ง,16,7
+1167109050886,พีรวัส,แป้นมุข,16,11
+1167109050902,ทาริกา,แป๊ะหลี,9,5
+1167109050308,ธนภัทร,แสงอินทร์,13,4
+1166109010106,ภัทรธร,แสงอุทัศน์,25,25
+1167109051157,อาทิตย์,แอมรัมย์,8,7
+1166109010098,ชัญญานุช,โพธิ์มี,24,16
+1167109051199,ชไมพร,โมฬีชาติ,12,6
+1167109050837,ดวงพร,โสมศรีแก้ว,12,16
+1166109010031,กิตติภูมิ,โอภาส,18,20
+1167109050894,รชต,ใยอ่อน,19,23
+1167109050928,นัยน์ปพร,ไชยแสง,6,3
 `;
 
-        const usernameInput = document.getElementById('username-input');
-        const findButton = document.getElementById('find-total-btn');
+        const studentIdInput = document.getElementById('studentid-input');
+        const findButton = document.getElementById('find-scores-btn');
+        const pdpaConsent = document.getElementById('pdpa-consent');
         const resultContainer = document.getElementById('result-container');
-        const resultOutput = document.getElementById('result-output');
         const userNameOutput = document.getElementById('user-name-output');
+        const midtermScoreOutput = document.getElementById('midterm-score');
+        const quizScoreOutput = document.getElementById('quiz-score');
+        const totalScoreOutput = document.getElementById('total-score');
         const errorMessage = document.getElementById('error-message');
         const canvas = document.getElementById('score-curve-canvas');
         const avgScoreEl = document.getElementById('avg-score');
@@ -166,32 +210,43 @@
         function parseCSV(text) {
             const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== ''); 
             if (lines.length < 2) { showError("CSV data is empty or invalid."); return; }
-            const headers = lines[0].split(',');
-            const usernameIndex = headers.indexOf('Username');
-            const totalIndex = headers.indexOf('Total');
-            const firstNameIndex = headers.indexOf('First name');
-            const surnameIndex = headers.indexOf('Surname');
+            
+            const headers = lines[0].split(',').map(h => h.trim());
+            const headerMap = {};
+            headers.forEach((h, i) => headerMap[h] = i);
 
-            if(usernameIndex === -1 || totalIndex === -1 || firstNameIndex === -1 || surnameIndex === -1) { 
-                showError("CSV must have 'Username', 'Total', 'First name', and 'Surname' columns."); 
-                return; 
+            const requiredHeaders = ['studentid', 'firstname', 'surname', 'mid_score', 'quiz_score'];
+            for (const h of requiredHeaders) {
+                if (headerMap[h] === undefined) {
+                    showError(`CSV must have a '${h}' column.`);
+                    return;
+                }
             }
+            
             csvData = lines.slice(1).map(line => {
                 const data = line.split(',');
+                const midScore = parseFloat(data[headerMap['mid_score']]?.trim());
+                const quizScore = parseFloat(data[headerMap['quiz_score']]?.trim());
+                
+                const mid = isNaN(midScore) ? 0 : midScore;
+                const quiz = isNaN(quizScore) ? 0 : quizScore;
+
                 return { 
-                    Username: data[usernameIndex]?.trim(), 
-                    Total: data[totalIndex]?.trim(),
-                    FirstName: data[firstNameIndex]?.trim(),
-                    Surname: data[surnameIndex]?.trim()
+                    studentid: data[headerMap['studentid']]?.trim(), 
+                    firstname: data[headerMap['firstname']]?.trim(),
+                    surname: data[headerMap['surname']]?.trim(),
+                    mid_score: midScore, // Store original value for display
+                    quiz_score: quizScore, // Store original value for display
+                    total_score: mid + quiz
                 };
             });
         }
         
         /**
-         * Calculates the mean and standard deviation of the scores.
+         * Calculates the mean and standard deviation of the total scores.
          */
         function calculateStatistics() {
-            const scores = csvData.map(row => Number(row.Total)).filter(score => !isNaN(score));
+            const scores = csvData.map(row => row.total_score).filter(score => typeof score === 'number' && !isNaN(score));
             if (scores.length === 0) return;
             
             const mean = scores.reduce((acc, val) => acc + val, 0) / scores.length;
@@ -209,32 +264,53 @@
             calculateStatistics();
         });
 
+        // --- Event listener for PDPA consent checkbox ---
+        pdpaConsent.addEventListener('change', () => {
+            if (pdpaConsent.checked) {
+                findButton.disabled = false;
+                findButton.classList.remove('disabled-button');
+                findButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'hover:scale-105');
+            } else {
+                findButton.disabled = true;
+                findButton.classList.add('disabled-button');
+                findButton.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'hover:scale-105');
+            }
+        });
+
         // --- Event Listener for Find Button ---
         findButton.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (!username) { showError("Please enter a username."); return; }
+            const studentId = studentIdInput.value.trim();
+            if (!studentId) { showError("Please enter a Student ID."); return; }
             hideError();
 
-            const userRecord = csvData.find(row => row.Username === username);
+            const userRecord = csvData.find(row => row.studentid === studentId);
 
             if (userRecord) {
-                userNameOutput.textContent = `${userRecord.FirstName} ${userRecord.Surname}`;
-                resultOutput.textContent = `${userRecord.Total || 'N/A'} / ${fullScore}`;
+                userNameOutput.textContent = `${userRecord.firstname} ${userRecord.surname}`;
+                midtermScoreOutput.textContent = `${isNaN(userRecord.mid_score) ? '-' : userRecord.mid_score} / ${fullMidtermScore}`;
+                quizScoreOutput.textContent = `${isNaN(userRecord.quiz_score) ? '-' : userRecord.quiz_score} / ${fullQuizScore}`;
+                totalScoreOutput.textContent = `${userRecord.total_score} / ${fullScore}`;
+
                 showResult();
-                drawNormalCurve(Number(userRecord.Total));
+                drawNormalCurve(userRecord.total_score);
             } else {
-                showError(`Username "${username}" not found.`);
+                showError(`Student ID "${studentId}" not found.`);
                 hideResult();
             }
         });
         
-        usernameInput.addEventListener('keyup', (event) => {
-            if (event.key === 'Enter') { event.preventDefault(); findButton.click(); }
+        studentIdInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (!findButton.disabled) {
+                    findButton.click();
+                }
+            }
         });
 
         /**
-         * Draws the normal distribution curve on the canvas.
-         * @param {number} userScore - The score of the current user.
+         * Draws the normal distribution curve on the canvas based on total scores.
+         * @param {number} userScore - The total score of the current user.
          */
         function drawNormalCurve(userScore) {
             const ctx = canvas.getContext('2d');
@@ -242,28 +318,26 @@
             ctx.clearRect(0, 0, width, height);
 
             const { mean, stdDev } = scoreStats;
-            if (stdDev === 0) return;
+            if (stdDev === 0 && csvData.length < 2) return; 
 
             const padding = 50;
             const chartWidth = width - padding * 2;
             const chartHeight = height - padding;
             
-            // Function to map a score to an X coordinate
             const getX = (score) => padding + (score / fullScore) * chartWidth;
 
-            // Function for the normal distribution PDF
             const pdf = (x) => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
-            const maxPdf = pdf(mean); // Peak of the curve
+            const maxPdf = stdDev > 0 ? pdf(mean) : 1; 
 
             // Draw the curve
             ctx.beginPath();
             ctx.moveTo(getX(0), height - padding / 2);
             for (let score = 0; score <= fullScore; score += 0.5) {
                 const x = getX(score);
-                const y = (height - padding / 2) - (pdf(score) / maxPdf) * (chartHeight * 0.9);
+                const y = (height - padding / 2) - (stdDev > 0 ? (pdf(score) / maxPdf) * (chartHeight * 0.9) : 0);
                 ctx.lineTo(x, y);
             }
-            ctx.strokeStyle = '#3b82f6'; // Blue
+            ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 2;
             ctx.stroke();
 
@@ -271,11 +345,10 @@
             ctx.beginPath();
             ctx.moveTo(padding, height - padding / 2);
             ctx.lineTo(width - padding, height - padding / 2);
-            ctx.strokeStyle = '#9ca3af'; // Gray
+            ctx.strokeStyle = '#9ca3af';
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Helper to draw lines and text
             const drawMarker = (score, color, text, isUser = false) => {
                 const x = getX(score);
                 ctx.beginPath();
@@ -293,27 +366,24 @@
                 ctx.fillText(text, x, padding / 2 - 5);
             };
 
-            // Draw markers
             drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(1)}`);
-            drawMarker(userScore, '#ef4444', `You: ${userScore}`, true);
-
-            // Add axis labels
+            if (typeof userScore === 'number' && !isNaN(userScore)) {
+                drawMarker(userScore, '#ef4444', `You: ${userScore}`, true);
+            }
+            
             ctx.fillStyle = '#6b7280';
             ctx.font = '12px Inter';
             ctx.fillText('0', padding, height - padding / 2 + 15);
-            ctx.fillText(String(fullScore), width - padding, height - padding/2 + 15);
+            ctx.fillText(String(fullScore), width - padding, height - padding / 2 + 15);
         }
 
-        // --- UI Helper Functions ---
-        function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); }
+        function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); hideResult(); }
         function hideError() { if (!errorMessage.classList.contains('hidden')) { errorMessage.classList.add('hidden'); } }
         function showResult() { if (resultContainer.classList.contains('hidden')) { resultContainer.classList.remove('hidden'); } }
         function hideResult() { 
             if (!resultContainer.classList.contains('hidden')) { 
                 resultContainer.classList.add('hidden'); 
-            } 
-            resultOutput.textContent = '-';
-            userNameOutput.textContent = '';
+            }
         }
     </script>
 </body>
