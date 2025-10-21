@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES Encryption/Decryption Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s, bottom 0.5s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-2xl w-full m-4">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">AES Encryption & Decryption</h1>
+            <p class="text-gray-500 mt-2">Secure your data easily. Enter your text and a password below.</p>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label for="text-input" class="block text-sm font-medium text-gray-700">Text to Encrypt/Decrypt</label>
+                <textarea id="text-input" rows="8" class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"></textarea>
+            </div>
+            <div>
+                <label for="password-input" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password-input" class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <button id="encrypt-btn" class="w-full text-white font-bold py-3 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 custom-btn">Encrypt</button>
+            <button id="decrypt-btn" class="w-full text-white font-bold py-3 px-4 rounded-lg bg-green-600 hover:bg-green-700 custom-btn">Decrypt</button>
+        </div>
+        
+        <div class="mt-6">
+             <label for="result-output" class="block text-sm font-medium text-gray-700">Result</label>
+            <div class="relative">
+                <textarea id="result-output" rows="8" readonly class="mt-1 block w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg shadow-inner cursor-not-allowed"></textarea>
+                 <button id="copy-btn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800" title="Copy to Clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script>
+        const textInput = document.getElementById('text-input');
+        const passwordInput = document.getElementById('password-input');
+        const encryptBtn = document.getElementById('encrypt-btn');
+        const decryptBtn = document.getElementById('decrypt-btn');
+        const resultOutput = document.getElementById('result-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const toast = document.getElementById('toast');
+
+        encryptBtn.addEventListener('click', () => {
+            const text = textInput.value;
+            const password = passwordInput.value;
+            if (!text || !password) {
+                alert('Please provide both text and a password.');
+                return;
+            }
+            const encrypted = CryptoJS.AES.encrypt(text, password).toString();
+            resultOutput.value = encrypted;
+        });
+
+        decryptBtn.addEventListener('click', () => {
+            const encryptedText = textInput.value;
+            const password = passwordInput.value;
+            if (!encryptedText || !password) {
+                alert('Please provide the encrypted text and a password.');
+                return;
+            }
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedText, password);
+                const originalText = bytes.toString(CryptoJS.enc.Utf8);
+                if (originalText) {
+                    resultOutput.value = originalText;
+                } else {
+                    resultOutput.value = 'Decryption failed. Check your password or input text.';
+                }
+            } catch (e) {
+                 resultOutput.value = 'Decryption failed. The input text may be corrupted or invalid.';
+            }
+        });
+        
+        copyBtn.addEventListener('click', () => {
+            if(resultOutput.value) {
+                resultOutput.select();
+                document.execCommand('copy'); 
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

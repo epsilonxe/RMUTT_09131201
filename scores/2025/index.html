@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Score Finder</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -27,7 +28,7 @@
         <!-- Student ID Input Section -->
         <div class="mb-4">
             <label for="studentid-input" class="block text-sm font-medium text-gray-700">Student ID</label>
-            <input type="text" id="studentid-input" placeholder="e.g., 1157109052140 " class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+            <input type="text" id="studentid-input" placeholder="e.g., 1163109051248" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
         </div>
 
         <!-- PDPA Consent Checkbox -->
@@ -60,6 +61,10 @@
                         <span class="font-medium text-gray-600">Quiz Score</span>
                         <span id="quiz-score" class="text-2xl font-bold text-gray-800">-</span>
                     </div>
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Assignment Score</span>
+                        <span id="asg-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
                     <div class="flex justify-between items-center bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
                         <span class="font-bold text-blue-700">Total Score</span>
                         <span id="total-score" class="text-3xl font-extrabold text-blue-600">-</span>
@@ -86,111 +91,17 @@
         // Store parsed CSV data globally
         let csvData = [];
         let scoreStats = { mean: 0, stdDev: 0 };
-        // Define full scores
+        
+        // --- Define full scores ---
         const fullMidtermScore = 46;
         const fullQuizScore = 30;
-        const fullScore = fullMidtermScore + fullQuizScore;
+        const fullAsgScore = 23;
+        const fullScore = 75;
         
-        // --- Hardcoded CSV data in the new format ---
-        const csvContent = `studentid,firstname,surname,mid_score,quiz_score
-1167109050399,ธนเทพ,กลิ่นฉาย,6,4
-1167109051082,ธนภัทร,กลิ่นหอม,14,6
-1167109051249,กฤตณัฐ,กัลยาณมงคล,4,-
-1167109050449,ศิวกร,ขวัญสุข,12,5
-1167109050233,จิรัชญา,ขำทรัพย์,7,-
-1167109051116,ภัทรพล,คำสมบัติ,13,3
-1167109050647,ภูวนัย,คุ่ยจาด,11,16
-1167109050829,ณัชพล,งามสกุลธิติ,10,5
-1167109050084,พิทวัส,จันทร์แก้ว,32,26
-1167109051140,ธนชาต,จิตดี,13,7
-1167109050704,จิรเมธ,จุ้ยกำจร,20,5
-1167109050936,ยศพนธ์,ชมชิด,26,20
-1167109051017,โสริยา,ซุน,9,6
-1167109050563,ธเนศ,ต้อยกระโทก,9,5
-1167109051207,เอกรินทร์,ทรัพย์เสรี,14,1
-1167109050191,ศิรินภา,ทานอก,7,-
-1167109050274,ภูดิศร,ทุเรียนงาม,17,18
-1167109050464,ก้องภพ,นิลกล่ำ,16,13
-1167109050365,รัชชานนท์,บางหลวง,23,16
-1167109050787,กฤตยาพร,บุญเหลือ,14,6
-1166109010148,กันธิชา,พงษ์จันทร์,19,21
-1167109050712,สราวุฒิ,พรมโคตร,9,2
-1167109051033,ศิริเพ็ญ,พลสำโรง,18,18
-1167109050951,สฤษฏ์พนธ์,พลายกุมพล,10,5
-1167109050779,วรวุฒิ,พวงมาลัย,18,16
-1167109050910,ณัฐิวุฒิ,พิมพ์ตะคลอง,14,9
-1167109050514,ธนพร,พูลทราย,17,7
-1167109050282,ชินาธิป,มอญถนอม,16,4
-1167109050795,ภูมินทร์,มั่นหมาย,7,16
-1166109010049,ชัยสิทธิ์,มิ่งละเอียด,13,6
-1167109051272,ลัทธพล,ยันประเวศ,12,22
-1167109051280,เพิร์ธ,ร่มโพธิ์,2,28
-1167109050522,ชาคริต,รอดมะณี,15,3
-1167109050720,ธราธร,รัตนาเหล่าถาวร,29,18
-1167109050068,จิราพร,รุ่งโรจน์,23,23
-1167109050555,ณัฐนันท์,ฤทธิ์ประเสริฐ,13,20
-1167109050662,ปัญญสิริย์,ลี้ธัญญคมสกุล,12,4
-1167109050845,ฉัตรทกาณ,วิชัยขัตฆะ,10,4
-1167109050621,ศิรพัฒ,ศรัทธาธรรม,16,23
-1167109050506,ศุภสิน,ศรีสวัสดิ์,10,5
-1167109051074,นวรัตน์,ศรีเมือง,7,4
-1165109051219,ต้นน้ำ,ศุภศรี,15,28
-1166109010072,ปรัชญา,สมสวย,29,26
-1167109050738,ธนวิชญ์,สร้อยกล่อม,14,18
-1167109051108,สุทิน,สวงโท,14,6
-1165109051201,ปิยวัฒน์,สวยรูป,10,2
-1167109050852,กิตติภพ,สังข์วิเศษ,17,27
-1167109050126,ชนกันต์,สาขามุละ,20,5
-1164109050990,เจตนิพัทธ์,สาทอง,-,10
-1167109050654,ณภัทร,สำราญพิศ,16,1
-1167109050092,กิตติศักดิ์,สุดสงวน,17,4
-1167109050209,ณัฐนนท์,สุวรรณผา,13,4
-1167109050639,ปัญจพล,สุวรรณรังษี,21,9
-1167109050407,อนุชา,สุวรรณอัมพร,10,2
-1167109050985,ชลลดา,หมวดผา,6,5
-1167109050019,ธนโชติ,อ่อนศรี,1,-
-1167109050605,อรปรียา,อำนาจ,8,5
-1167109051041,กฤตานนท์,อ่ำเล็ก,10,4
-1167109050498,มณิอร,อินทริง,11,4
-1167109050225,ปริยาภรณ์,อินทะรัง,14,9
-1167109051058,อัคษราภัค,อึ้งสวัสดิ์,11,2
-1167109050571,วินัฐชา,อุดมสันติ์,8,4
-1167109050134,อาภัสรา,อุปฮาด,10,8
-1166109010122,นิคม,เกิดอรุณ,16,5
-1167109050381,อภิชญา,เขื่อนแก้ว,12,5.5
-1167109050035,จีรศักดิ์,เจริญผล,13,13
-1167109051173,กันตพิชญ์,เชียงศรี,21,25
-1167109050316,ณัฐวดี,เต๊ะวงษ์,6,-
-1167109050746,ชินพัฒน์,เทวรักษ์พิทักษ์,19,3
-1167109051090,ปารเมศ,เปรมกระโทก,9,4
-1167109050597,สิทธิศักดิ์,เพชรคำ,8,5
-1167109050613,พศิน,เพิงระนัย,20,17
-1167109050423,ธงทอง,เพิ่มนิยมกิจ,17,21
-1167109050860,ธนานันท์,เพิ่มผล,9,4
-1167109050969,อาทิตยา,เพียงลิ้ม,6,5
-1167109050878,ศษิธร,เรืองไกรศิลป์,14,6
-1167109050472,ชวกร,เลียดรักษ์,19,5
-1167109050373,วทัญญู,เสริมสุขวัฒนกุล,14,24
-1166109010114,ศิโรรัตน์,เหลืองหิรัญ,32,24
-1163109051248,เตชินท์,เอียดรัตน์,8,1
-1167109051124,ศิวกรณ์,เอี่ยมทองคำ,13,7
-1167109050944,อภินพ,แก้วประเสริฐ,19,14
-1166109010155,วงศกร,แก้วสุวรรณ,18,5
-1167109050977,ภัทรพล,แก้วเจริญ,13,3
-1167109050811,ชนาธิป,แซ่อึ้ง,16,7
-1167109050886,พีรวัส,แป้นมุข,16,11
-1167109050902,ทาริกา,แป๊ะหลี,9,5
-1167109050308,ธนภัทร,แสงอินทร์,13,4
-1166109010106,ภัทรธร,แสงอุทัศน์,25,25
-1167109051157,อาทิตย์,แอมรัมย์,8,7
-1166109010098,ชัญญานุช,โพธิ์มี,24,16
-1167109051199,ชไมพร,โมฬีชาติ,12,6
-1167109050837,ดวงพร,โสมศรีแก้ว,12,16
-1166109010031,กิตติภูมิ,โอภาส,18,20
-1167109050894,รชต,ใยอ่อน,19,23
-1167109050928,นัยน์ปพร,ไชยแสง,6,3
-`;
+        // --- Hardcoded ENCRYPTED CSV data ---
+        const csvContent = "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";
 
+        // --- Get DOM Elements ---
         const studentIdInput = document.getElementById('studentid-input');
         const findButton = document.getElementById('find-scores-btn');
         const pdpaConsent = document.getElementById('pdpa-consent');
@@ -198,6 +109,7 @@
         const userNameOutput = document.getElementById('user-name-output');
         const midtermScoreOutput = document.getElementById('midterm-score');
         const quizScoreOutput = document.getElementById('quiz-score');
+        const asgScoreOutput = document.getElementById('asg-score');
         const totalScoreOutput = document.getElementById('total-score');
         const errorMessage = document.getElementById('error-message');
         const canvas = document.getElementById('score-curve-canvas');
@@ -215,7 +127,7 @@
             const headerMap = {};
             headers.forEach((h, i) => headerMap[h] = i);
 
-            const requiredHeaders = ['studentid', 'firstname', 'surname', 'mid_score', 'quiz_score'];
+            const requiredHeaders = ['studentid', 'firstname', 'surname', 'mid_score', 'quiz_score', 'asg_score'];
             for (const h of requiredHeaders) {
                 if (headerMap[h] === undefined) {
                     showError(`CSV must have a '${h}' column.`);
@@ -227,9 +139,11 @@
                 const data = line.split(',');
                 const midScore = parseFloat(data[headerMap['mid_score']]?.trim());
                 const quizScore = parseFloat(data[headerMap['quiz_score']]?.trim());
+                const asgScore = parseFloat(data[headerMap['asg_score']]?.trim());
                 
                 const mid = isNaN(midScore) ? 0 : midScore;
                 const quiz = isNaN(quizScore) ? 0 : quizScore;
+                const asg = isNaN(asgScore) ? 0 : asgScore;
 
                 return { 
                     studentid: data[headerMap['studentid']]?.trim(), 
@@ -237,7 +151,8 @@
                     surname: data[headerMap['surname']]?.trim(),
                     mid_score: midScore, // Store original value for display
                     quiz_score: quizScore, // Store original value for display
-                    total_score: mid + quiz
+                    asg_score: asgScore, // Store original value for display
+                    total_score: (25 * mid / fullMidtermScore) + (25 * quiz / fullQuizScore) + (25 * asg / fullAsgScore)
                 };
             });
         }
@@ -260,8 +175,19 @@
 
         // --- Event Listener to parse data when the page loads ---
         document.addEventListener('DOMContentLoaded', () => {
-            parseCSV(csvContent);
-            calculateStatistics();
+            const password = "123456"; // Default password
+            try {
+                const bytes = CryptoJS.AES.decrypt(csvContent, password);
+                const decryptedCsv = bytes.toString(CryptoJS.enc.Utf8);
+                if (!decryptedCsv) {
+                    showError("Decryption failed. The data may be corrupted or the password is wrong.");
+                    return;
+                }
+                parseCSV(decryptedCsv);
+                calculateStatistics();
+            } catch (e) {
+                showError("An error occurred during decryption.");
+            }
         });
 
         // --- Event listener for PDPA consent checkbox ---
@@ -289,7 +215,8 @@
                 userNameOutput.textContent = `${userRecord.firstname} ${userRecord.surname}`;
                 midtermScoreOutput.textContent = `${isNaN(userRecord.mid_score) ? '-' : userRecord.mid_score} / ${fullMidtermScore}`;
                 quizScoreOutput.textContent = `${isNaN(userRecord.quiz_score) ? '-' : userRecord.quiz_score} / ${fullQuizScore}`;
-                totalScoreOutput.textContent = `${userRecord.total_score} / ${fullScore}`;
+                asgScoreOutput.textContent = `${isNaN(userRecord.asg_score) ? '-' : userRecord.asg_score} / ${fullAsgScore}`;
+                totalScoreOutput.textContent = `${userRecord.total_score.toFixed(2)} / ${fullScore}`;
 
                 showResult();
                 drawNormalCurve(userRecord.total_score);
@@ -363,12 +290,15 @@
                 ctx.fillStyle = color;
                 ctx.font = 'bold 12px Inter';
                 ctx.textAlign = 'center';
-                ctx.fillText(text, x, padding / 2 - 5);
+                
+                // Position user score text at the top, and average score text at the bottom to avoid overlap
+                const textYPosition = isUser ? (padding / 2 - 5) : (height - padding / 2 + 15);
+                ctx.fillText(text, x, textYPosition);
             };
 
-            drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(1)}`);
+            drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(2)}`);
             if (typeof userScore === 'number' && !isNaN(userScore)) {
-                drawMarker(userScore, '#ef4444', `You: ${userScore}`, true);
+                drawMarker(userScore, '#ef4444', `You: ${userScore.toFixed(2)}`, true);
             }
             
             ctx.fillStyle = '#6b7280';
