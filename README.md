@@ -2,29 +2,29 @@
 Offical Repository of RMUTT 09131201 Numerical Methods for Computers
 
 Lecturers:
- - Ratthaprom Promkam, Dr.rer.nat.
+ - Ratthaprom PROMKAM, Asst. Prof., Dr. rer. nat.
 
 ![Banner](./materials/banner.jpg)
 
 
 ## Schedules
 
-SEMESTER 1/2568
+SEMESTER 1/2569
 
-| Section | Date    | Lecture  | Workshop | MS-Team Code | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2318) Key |
+| Section | Date    | Lecture  | Workshop | Line Group | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2318) Key |
 |---------|---------|----------|----------|--------|---------|
-|  SEC01  | พฤหัสบดี     |ST5-703 เวลา 13.00 - 15.00 | ST5-703 เวลา 15.00 - 17.00 | `2vk9i4v` | N/A  |
-|  SEC02  | พฤหัสบดี     |ST5-703 เวลา 08.00 - 10.00 | ST5-703 เวลา 10.00 - 12.00 | `3skdopw` | N/A  |
-|  SEC03  | อังคาร     | ST5-703 เวลา 13.00 - 15.00 | ST5-703 เวลา 15.00 - 17.00 | `h2t52ic` | N/A  |
+|  SEC01  | อังคาร     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/_JVbcbnLBP) | TBA  |
+|  SEC02  | พุธ     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/4pAUaY_9nk) | TBA  |
+|  SEC03  | พฤหัสบดี     | ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/UkpKh3RbU8) | TBA  |
 
 
 ## Examinations
 
 | Section | MIDTERM | FINAL  | Location|
 |---------|---------|-------|---------|
-| SEC 01-03 | 2 กันยายน 2568 เวลา 09.00 - 12.00  | 28 ตุลาคม 2568 เวลา 09.00 - 12.00  | ST5-703/ST5-704 |
+| SEC 01-03 | 1 ก.ย. 2569 เวลา 09:00 - 12:00  | 27 ต.ค. 2569 เวลา 09:00 - 12:00 | อาคาร ทสม ห้อง ST5-703/704 |
 
-- [ประกาศคะแนนสอบ](./scores/2025) 
+ 
 
 
 
