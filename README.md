@@ -13,9 +13,9 @@ SEMESTER 1/2569
 
 | Section | Date    | Lecture  | Workshop | Line Group | [D-Learn](https://dlearn.rmutt.ac.th/course/view.php?id=2318) Key |
 |---------|---------|----------|----------|--------|---------|
-|  SEC01  | อังคาร     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/_JVbcbnLBP) | TBA  |
-|  SEC02  | พุธ     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/4pAUaY_9nk) | TBA  |
-|  SEC03  | พฤหัสบดี     | ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/UkpKh3RbU8) | TBA  |
+|  SEC01  | อังคาร     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/_JVbcbnLBP) | `PL9-8kF-4jB`  |
+|  SEC02  | พฤหัสบดี     |ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/4pAUaY_9nk) | `WE9-4sK-5Cn`  |
+|  SEC03  | พุธ     | ST1905 เวลา 08.00 - 10.00 | ST1905 เวลา 10.00 - 12.00 | [Join](https://line.me/ti/g/UkpKh3RbU8) | `LK7-Ja6-LMu`  |
 
 
 ## Examinations
