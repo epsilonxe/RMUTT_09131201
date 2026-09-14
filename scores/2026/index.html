@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Score Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for disabled button */
+        .disabled-button {
+            background-color: #d1d5db; /* gray-300 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full m-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">ประกาศคะแนนสอบ 1/2569</h1>
+        </div>
+
+        <!-- Student ID Input Section -->
+        <div class="mb-4">
+            <label for="studentid-input" class="block text-sm font-medium text-gray-700">Student ID</label>
+            <input type="text" id="studentid-input" placeholder="e.g., 1162109012345" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+
+        <!-- PDPA Consent Checkbox -->
+        <div class="mb-6 flex items-start">
+            <div class="flex items-center h-5">
+                <input id="pdpa-consent" name="pdpa-consent" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="pdpa-consent" class="text-gray-600">ข้าพเจ้ายืนยันว่าหมายเลขประจำตัวนักศึกษาที่กรอกเป็นของข้าพเจ้าเอง และยินยอมให้มีการประมวลผลข้อมูลส่วนบุคคลเพื่อตรวจสอบคะแนน</label>
+            </div>
+        </div>
+
+        <!-- Find Button -->
+        <button id="find-scores-btn" disabled class="w-full text-white font-bold py-3 px-4 rounded-lg transition-transform transform shadow-md disabled-button">
+            ค้นหาคะแนน
+        </button>
+
+        <!-- Result Display Section -->
+        <div id="result-container" class="mt-8 hidden">
+            <div class="p-6 bg-gray-50 rounded-lg">
+                <p id="user-name-output" class="text-2xl font-semibold text-gray-700 mb-4 text-center"></p>
+                
+                <!-- Scores Table -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Midterm Score</span>
+                        <span id="midterm-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Quiz Score</span>
+                        <span id="quiz-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                        <span class="font-medium text-gray-600">Assignment Score</span>
+                        <span id="asg-score" class="text-2xl font-bold text-gray-800">-</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
+                        <span class="font-bold text-blue-700">Total Score</span>
+                        <span id="total-score" class="text-3xl font-extrabold text-blue-600">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Normal Curve Chart -->
+            <div class="mt-6 text-center">
+                <canvas id="score-curve-canvas" width="500" height="250"></canvas>
+                <div class="text-sm text-gray-600 mt-2">
+                    <p>Class Average (Total): <span id="avg-score" class="font-bold"></span></p>
+                    <p>Standard Deviation: <span id="std-dev" class="font-bold"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="mt-6 text-center text-red-600 font-medium hidden"></div>
+
+    </div>
+
+    <script>
+        // Store parsed CSV data globally
+        let csvData = [];
+        let scoreStats = { mean: 0, stdDev: 0 };
+        
+        // --- Define full scores ---
+        const fullMidtermScore = 46;
+        const fullQuizScore = 30;
+        const fullAsgScore = 15;
+        const fullScore = 75;
+        
+        // --- Hardcoded ENCRYPTED CSV data ---
+        const csvContent = "U2FsdGVkX18Sv+KlqeKp1sD7cSQ8Q4wPbXwmbGY0ZAUVYYkp1uJDYVfm2QckBe6yja3WexKoVDggiVg2ay96AO11f6WNEUQ7yvWWcX6VB79rA7FNaYaUNjTSONTyHjJRmnPAwSJQlKAp4OhBaJXMN1F2jFuYW/w4aEqcLTgT7t90zeCra27oGGtttRrF36Ha+ABv9P5nqigx9LxoiDSHISGsOi0mLTkGF1Vq1j92ml8BZ2HrL0RBCnortAbRdKlTQJO3ebsArKsrcZmL0EmzEmCFTRGc2fihdaIybtt589NhuKqilEN6OSl/1ai4mEdAqWHuVPMiailB4kpJODpNzzVx//Y81Clzr+UzMe6gsIkwZE0Jk43zwlcu6T+bferIpfFPnppVuz6H7tQckUOjrJY2Vc3ZzaabUmcmRNVIiyNnDea9wz+ixWvjtVCb/ftQhXdHptPMVi3KYyAMSiiwDVm7hhihX1pcB+epCf0gz4Siiw4D9eDfPqOCXQ1PqivOXhCwBADtixdiWkqa/ko7tVq40SSSInGEwxBJn41PH/K/cDcNR120EetdCGvTbqgMgE6WWbNrDysdiwJ8dM2HgJQ//hd815i7plLFHArdMpcsVkXvvKlTxqUvDv2qUCxjbE1+6Ttc/fNGipnTtj1S8yUDdB8epWeYqhkX8EusEv+5dn65PgTxoNuqeVJOaDjtemY3F0PU4NCzIpT+1qjzaHLCxrqi4kkTqDbO3wKeG5ABfJzuB2SK+grpB4TDdNP1+HxPods9pgtIEqyemAgW+YKnZPU6hGnKrt7KDZH6yKr8pqHXwKTlcIsd0gdeArzsYR0B3HIOHgKZUWS3DPGSCJJGQQJ4UabrQrxat0HDjq9buio5QPdPOvtji87uo+yUq9smFloDJh0bkaJvO4biVuKOyLeM70bkvyZA5AhEPsZoDp1/E8984iDXZAUJhFt0myeBhG8YFWhyk5kfk7kcSbAGKaQuisIX6yYYPm51Y823iDM7B3OeIO2ZbfNr8EEumNKsiY0+5xi1KPD5k8Ls8rag6VshKGkfTNJQON/Sp6NK85hihC1J83Gscw1duNOXDWf15epMFESyqEiXon1kr6C+mAYQmZYOkclkcdVqzjN7z6No533KHLrl071aA9vdpkwBCruUitKmOpxNpyRCtO9AfISHhgrsBHEiGXjsh+HIE3ncMlI3fflA2h3fpjEr1fH2YzIUBDx9Zwmv+ohy5qfG9jK60Syfy7CA+Sox/uAe4/C2JYqUAwsnouLhVXjzxqthsewO/pDpFyljZeRMT7756C82BCHtmwqgrnEkO5qAnlq0T24CJ2ON5pdQkHmVzYtKLcqtQcL9ZP7FUSFWImVh46QgZwmDWJmLdLGoNHNaNYA2WUUpyrIfaOa2cHNTDkRGW1gAj+BiUdNNDZik+I081Q+kxmBKDzIsLunJedIFm6K4ovY8bQEmD0X+vlYsOw7u2hvvGT5xCdWtVU8NmPIBCEStSflpuq5+0aepntGlvvPwCmRZN867cinqBjlHTFL531tW+7KJJ+6SVL9yAHoWLFU2t0g1bRnMAE0QDtFrRlbMOio6VzgheetrxoyNcaUlXujxIc5lnIPiUOEOmvs/tSYATG7sLhHGhlm8gYeBHK8m+7TK/Yz1XyQ/GeYuuRuamY7yuXOJKbP9fiaX5IMfNxfUe2VthGkpfMaE1ti9aH7LeleSdkdVPez1TFSE8YV4Wtwf5O4KO/eU1fL3aU02+luunUnoRsd0RXvndmqduS27/dxs4o6lWUk98Ae4oFNeW0cW8VBl5kg7KSZD/GoHpxWlGdvU3sSTQBKbSCdesKDInZx1slgYz+WnRPFoq/qoS91/LliMoVLOddmdXkQZ5uLA33jRBFqy4UGE19DvJNAHUsovvNn/nXpXwyYuWS/20mtlLv2dq/0L/EEFEgEcX5V+KfFCCqZa0QSDiVaFCi3qVfIPU68Pqi/xfkI3JMzfTolR9TPfnuKddGpZhU5bjiFIubMPJYBsZE2dtCQPBF0PL0SUvgbewo4CxMynIipD0MDUq++XJHIXKCLiHm2SBk06tjsrgP+/5PerTFxDXaQwnsPYXMG2qttwT2pohZgsztCdl9XkeRA1RRySsMsef7NlZcWwhREAOdQsN2Zj/2hdwoXjs8728ujS6go6Po88oALAvf4cTvlkG9AJIhGucRF3OS0LIAr4Gl1YotpJwBQqUzIxvaF6/4HD8A+8XRB5x1g8HC7ItLvYlZiErnhDVEp5cyLXCgOrO5NPpIjYAYyh1kWzbP1vbAM+u9TDZrAYJpNFAm6i1g6hO8WHLDB2KjssgO0akq0QefAvvQhu+L60eADkqNmzC4cs/HFvXFDDzNXvt3vC2QNC0rYnx8jLXceAJ0jifpSddYdeEnhmiEcs4U7R7A+nsSp3mcFVY5dBc4dJzw1Yns+2asFHzdCPr35EUFbVAcaE4oG4Dagzk9w+97TPXXzUvrUxE4qMq/LPgCs4OQNWYRJbplV8s73VVMQ+j+9nusOEMlBx1Gwvmge/GyZ5kmRTQrXLiKDK3H5b3SRKdk8+4UJxXTCB8R6r0xu4/ga4p4gxekqqOZ46wZZqnO6HWCpyHL1XjdMjqnS4plp6Ex9I25fThN2CUMCGkkPiMi9gm+HHV7Qq8pMWC+YzauaKlnD7jUClnj8F0oGa1oawbWPT9CyMcS9xMhdt0jRFhX3kvzUd7i5QAiFbCOjVI3XidtktXtE7IezmFAsX75i5JGNeRZ/HM4GoZbHjQA/SKXyhfEQo/klj6wZdlXcq+LcJgFBmOPyoi1sxmbjUit+UbpmKvY86kUjzPfa3B/ttOccJtktMxIw3ez5V0I92RMentj0YAiWH9ENvxE0rxPUR2JwabFnYnxoSuWDmtMfWCCWftN4FK8AoB5piqBjPT1UeJulDQlA+eyze8X6lGPaSxfrg/H7xJO6VSkrT3PkKtnFPAz2sf+3VPrmeObocWrYRpY6ITWi700NNvndnEiGh35kXzhqhRx8fo85AhrkAc52Wo4OviUYNkIz61JYw29ECvWnD0VKRIVgkqLMlXgY7j2jmA6shpR0mvYptTX3e+7tcSqMy/ISKk6OApgbafm95+2qPj1+GHao/E3/UxG5Z7sQ9Ra45/xzvNfxRK32gIghbiP2fqSyDqRStuI2cAyNBBb0RsUfaBaw+p3mDgO3Y/lMiIIN/ZBcCdHZneRKclloNxSds7622HDLgfAxfdMpkJz6m5wtfTfOQbcVrBiaXisYg39+SdS2gy3KHwD3dHCsQTiXbumtYS7MzLinhIieTQxMf/8jxYgF1sa1W1wFvTm3QMGOJ5h1/jKRVQo9dwCWYWD0QvdBwnGKCU5rPlnvwRG/1jrrutK79n2SNCxf/vcrwWHYMUumgtAYuG1JKVq3l4tPmhrd8PvtvmKqvBGb7Hc3eojxIqeUGRl1emOfQL5hUjiOnlz4HPRqYyMl/FEp5TvANkoUpqcCfGgbj5t4oCxNhKgzk3hbVNMUZ6rfmEaSnEi9Wsp5iRdBphiVhkLTIm7xfR51lr1oEFHIPs7YK2/yjY9nxB4Pf+gBx75cyNo1SlIYdM8p9kPTlBFFZ51fCYptCTnedcLyoFAjjABrafnuXULTlfx58Ksf3bXe1Z64hysx0mQ+yqOpVNgs1GhLObE9PwcjYuk7JFSc4y2VEVaxN5he34lP/805az53oZnfXLhfJPb/1gOdaKcPHe5jNWohoasJPpl+zCneP3iwC6LPKj4rbGeDzhH18WiSAMbqEKaBBFH4f0LtNbgrm0g9i2gMBD9RUCU8hKOGSIM96ygH4rWJoejMjRb2AriB0VoOUxYpg5ggcmPpDDJqPT0u0lyuX7kpfUuLoHKZODwYWYBjLBPvrkkm2ncZMdHOlUvbBmU4vzn5UBp10NScN5YQ9eUwEfvy+Nm7WEMyHu70nyGrmri7E0f8eL62fkGKV2y992yP/xZEs5YCXWjtAYEt/9zps22lPsQIrPm3LHNuboygFfJa09xpdc0AhHTGy59C/0ZpEB8UxqI+ja90RjjNRSrj/H+2pTOEAr7ea+t3tzAbUHMiyw+CqMYeg58JTqF2au2jCpZihH2gE5lpTJlKGMYcmu3673Hv721ICdWe0AFqfq+cPKVwBVz628e7bxbjQaDhMynydw99O7GZTGjZi3FxoRa//yho0mDavh0mHockIK6zS/CX7IAB9nDQa9iIaDkAGRtkx+CkpkCYDbZAGsFYZjjBez1W5VkKPpnuEhHSEJSJWZhUfAuFMmbRXLfYQ4KrnOQ/5sELE18NQCMXZDIBice0laLTxwras0r+/M2ejdNPCQcE2zVgSs1k4d8QUULOGMsE2zSz7Qd9gKNSupgim+HDJAEIUim4IoW2KvwkbbKkYDpLUz9E3XmYdaaLjMrz4azGkHqpUtzoPrmKNfzxNWPYXMCrAzIkL0S3oyVT8zwFszixWl50wo1rY1UjFipjApIBDeIumwBs/12Iv94VMsb6s8uIKfawBuKIg3kXZQoqLg7svN2CJQ8rwVAXmcdczxbnCACNdJJ4er2tbGavK78+J0clc5wFfdDisnpuj5xqd0DZzurHae/vPWvZuC0Lix8vJ11CwazJz2ysMgUS1ThDEAhLbNza9UVjdPVZV+d349QVCq3KchPe7nHXmHs3fFyXfwh0QiB+pICu3Ff/Ekt0B7CLgTq3dpiUf/Kt/mXNcma5Odym6DWuESp/PtAr/oRObdccaXBem9HSP4UUFezdJwzPXk2RM+tVAxGJ+bNNwHkapDzqRcWDhRdYOeSPIwygL/tM8NVtyQJhPeQHtwmicZa9NEGSYSW5rriKZDLpHKa+IRodL97FgjA0V77+9eMpAXTBGjW34NpYve7qRSEGdmtcYJFOnFKHAplxI0aKMlcbyr6EQM2dhTBDYR2HRgnnjILmY5DWMk4aq241LNE5aROh0+i4jaGipZRbBq9vwvVRrndev0/zzY1GCussKrg0L3qagb4CSnfjIBf7euXRUDFeQXRYdAFYfdd+/jg/0MITWVO69QT95RDxT/NMtjcryAYPL7NBaksN+vhDKHh58x00dPbyl/usSAPDYXgITk3N3DzGaHumfU+7m/yWliB+Emz14L0fg7mVr0+KUm5TAyvlYT82Rl0e0SMy2nUVzrACJdxde6aK7ZNVfP3wK1+V6Y5bKLr4aVV5Qg1OsKQw4AbPcHIlWJbetr8YA+gnUtgSZq84U5NJOF5bSeYFsYXlwPWhlZM4d/Lo+Sj6DCDJ0MXAaMESDVkuO6TlLJzH3Cmmw92oFhBuMq75GmQaZDe90W1gyeNWyJHfGoT0Q9QI/1IfM0CAys4r8ZFK59aAfUbTjp/l1VLHHFruH2YpYG/Twgoo5iso4FzPdPpbbgtk+W8k2LgtmxrDrE2KbG7Fty4JJHrGDtyIQs43yGTP8B0BBkkRurUXTapulFbrjdzLambHjLB8AvKJAHvsIRWtGaKPK0ilVSr0Gdm6tFtK41/dauVtCqAUTk4u36JJ/P5YsOsegZOJOOHgYpNqWCwGgq/toIjNxGjsctt8/qxTdWy1hkGXkbkXO0TIyG1P4ncJkSzMX8hf17ApQocgeaSCuCsIsY8YDIxAOkl+6qU4siRYwtDxkR3VJRd7VEzhKKI4Ysod6LQCdLKs6TVSxXuFnoBgxv6XM16AcACkF0cYONKhjjWvXWEOLc+YOJf7UnEq/5mz4pSntypyV5txldRuPmN4eTaFGahUzX789shSnC+5OwYvGQr4zBcQYx2HZpmKPri4ZeEcR7e5jBX7RuveRXYLy7YXZ/pYJOxIKDFIPEfaO8BpZJmPMZLNsdvmYWyIw6a+reaNSBoKHPulJF4asl+tDfryPWT1l+nTeup4eKR3wn++xXPTBCO4UCbRzb9JOB0RIfnBJkPtpy9q2p/ITuXL6lQ9EV+2fWwWAAchNouFnzIZqLi7ek/Fmss8GPZ2OUH+30IWYjDX36Yq+SYhtgkpUo/lgPEZ42XqxTDb+/77F4lgdJe3a46qoKmO5yr+3RMc8vN9pLID+aGiLuJRm5Q8qxoMpMX2j6JxHWIv5zzJ3BKeM5qArI2pgS8VecqpUgMtT9qL1wk+mOMcha4w17vKHwMINDy/XYdsMNj9wWh8k+OdkqyzhfRpQx0/gFzAX+7K5xilxrqatCPYHNnHYVk33ZNDsy7B0iudQbhlYLxGxqo/qlbdSCDvIt9CycDUsYpv19143Wp1aWptCwwtGzL7vp0Gw+pdn1cmXU8poae6W4G2JUhQy97tjwRHUToyv+y9OGa9LbBcc7KVIOr+V9P/UYZ8eGYiir/RCAfs+dsDNEbooWYNZBY2t7TvtR8mWIhCo/WbgOukhL9DuO2C94rE3SQss8U3mcaP/X1JivpZBbjEIbnhuJCuxNCgZ642k3zTn+I0IK+X5rsyAahxb8+EjsMDPRFyQYsIjItNtd+wNVt6iTus5OS3TkuDaQywlFsy+KslT0YVJE6vjyRmiw8vwz3x2wpMnAPZyJt1z6f5iyEiSq2KGBVyHGuYbH4SRIIdCAJ8OO5CX2aiAc/DMfBUJ0lz6XZQs9AnprofKwdzw7Da6iFSidEbxpvgkmXb1GKJQR0Tk1KVjutzPBXA2yjhww39hbjuuRiB8f5ssBjdcS1PqhpHdNLhrqViBiYUOkVeXud30nQZyrC0X37ncDVDhAgEDVFScdjrB3/CNCCD7byqeD5e8SeJrB+pAVKh7P2LS7VSjDVsWN26hcbFJsuVEyBTupMC1LkT3gYigrFSONP+52Huki2334rXu6QS8ZMfES5naknZDtWnj11H5erg76pqz+SvPhiyqy15qTxxEi3tOA65M2ozeCT2EA4D845vCrPqtbjlEskTvlS+gU2xASUjrM1HFJpkn70jiKOR7YrQPjk3+BMmiSjsehoEk+C3HSyTivQulXGwMoQDf1rCo7IDQkoG/WrJrOOTY5RgfY9+u8E4XM4OpvXSpVQEVic9M76N1tcDDK1vLWLad8ehYq9q6HraBSCT0JdB1smhHILHoDMUdd+chqnfBOPSHecnDyfiCwfzUHPSjU8YP5FMJXnQTBackfOhynA7NYFP8yyClY2a5aRSvd5S0r/lYpDr0uONcx0x7WQIEZwfu7q5zkaMKeUhy5SqGtRdjyM2cKeidTLkvTvpI23s6bFAomyLQLbQFwfHAln/Gc7jHGXc3A/d+/6HN+RONRHahCK2FOn4adBKUW0YDNDzgMckm3Vkj14Fmm9ZmJC9uEYWelVjkTraEQfF6YsjC+WvTrN7kNCP9c1R71M6ehv4RrC6oUO0Dzfpo4vP5oskGD1J10DR+NQ06v9SEEOk7iRP2385KpADyg7CQcqKBwg55QJikfQYWgC+Sj1L0HX+Iu0ufzVD/b7A9ap0ElbNjdEU6ksTqrQ==";
+
+        // --- Get DOM Elements ---
+        const studentIdInput = document.getElementById('studentid-input');
+        const findButton = document.getElementById('find-scores-btn');
+        const pdpaConsent = document.getElementById('pdpa-consent');
+        const resultContainer = document.getElementById('result-container');
+        const userNameOutput = document.getElementById('user-name-output');
+        const midtermScoreOutput = document.getElementById('midterm-score');
+        const quizScoreOutput = document.getElementById('quiz-score');
+        const asgScoreOutput = document.getElementById('asg-score');
+        const totalScoreOutput = document.getElementById('total-score');
+        const errorMessage = document.getElementById('error-message');
+        const canvas = document.getElementById('score-curve-canvas');
+        const avgScoreEl = document.getElementById('avg-score');
+        const stdDevEl = document.getElementById('std-dev');
+
+        /**
+         * Parses the text content of a CSV string.
+         */
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== ''); 
+            if (lines.length < 2) { showError("CSV data is empty or invalid."); return; }
+            
+            const headers = lines[0].split(',').map(h => h.trim());
+            const headerMap = {};
+            headers.forEach((h, i) => headerMap[h] = i);
+
+            const requiredHeaders = ['studentid', 'firstname', 'surname', 'mid_score', 'quiz_score', 'asg_score'];
+            for (const h of requiredHeaders) {
+                if (headerMap[h] === undefined) {
+                    showError(`CSV must have a '${h}' column.`);
+                    return;
+                }
+            }
+            
+            csvData = lines.slice(1).map(line => {
+                const data = line.split(',');
+                const midScore = parseFloat(data[headerMap['mid_score']]?.trim());
+                const quizScore = parseFloat(data[headerMap['quiz_score']]?.trim());
+                const asgScore = parseFloat(data[headerMap['asg_score']]?.trim());
+                
+                const mid = isNaN(midScore) ? 0 : midScore;
+                const quiz = isNaN(quizScore) ? 0 : quizScore;
+                const asg = isNaN(asgScore) ? 0 : asgScore;
+
+                return { 
+                    studentid: data[headerMap['studentid']]?.trim(), 
+                    firstname: data[headerMap['firstname']]?.trim(),
+                    surname: data[headerMap['surname']]?.trim(),
+                    mid_score: midScore, // Store original value for display
+                    quiz_score: quizScore, // Store original value for display
+                    asg_score: asgScore, // Store original value for display
+                    total_score: (25 * mid / fullMidtermScore) + (25 * quiz / fullQuizScore) + (25 * asg / fullAsgScore)
+                };
+            });
+        }
+        
+        /**
+         * Calculates the mean and standard deviation of the total scores.
+         */
+        function calculateStatistics() {
+            const scores = csvData.map(row => row.total_score).filter(score => typeof score === 'number' && !isNaN(score));
+            if (scores.length === 0) return;
+            
+            const mean = scores.reduce((acc, val) => acc + val, 0) / scores.length;
+            const variance = scores.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / scores.length;
+            const stdDev = Math.sqrt(variance);
+
+            scoreStats = { mean, stdDev };
+            avgScoreEl.textContent = mean.toFixed(2);
+            stdDevEl.textContent = stdDev.toFixed(2);
+        }
+
+        // --- Event Listener to parse data when the page loads ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const password = "2026PWD"; // Default password
+            try {
+                const bytes = CryptoJS.AES.decrypt(csvContent, password);
+                const decryptedCsv = bytes.toString(CryptoJS.enc.Utf8);
+                if (!decryptedCsv) {
+                    showError("Decryption failed. The data may be corrupted or the password is wrong.");
+                    return;
+                }
+                parseCSV(decryptedCsv);
+                calculateStatistics();
+            } catch (e) {
+                showError("An error occurred during decryption.");
+            }
+        });
+
+        // --- Event listener for PDPA consent checkbox ---
+        pdpaConsent.addEventListener('change', () => {
+            if (pdpaConsent.checked) {
+                findButton.disabled = false;
+                findButton.classList.remove('disabled-button');
+                findButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'hover:scale-105');
+            } else {
+                findButton.disabled = true;
+                findButton.classList.add('disabled-button');
+                findButton.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'hover:scale-105');
+            }
+        });
+
+        // --- Event Listener for Find Button ---
+        findButton.addEventListener('click', () => {
+            const studentId = studentIdInput.value.trim();
+            if (!studentId) { showError("Please enter a Student ID."); return; }
+            hideError();
+
+            const userRecord = csvData.find(row => row.studentid === studentId);
+
+            if (userRecord) {
+                userNameOutput.textContent = `${userRecord.firstname} ${userRecord.surname}`;
+                midtermScoreOutput.textContent = `${isNaN(userRecord.mid_score) ? '-' : userRecord.mid_score} / ${fullMidtermScore}`;
+                quizScoreOutput.textContent = `${isNaN(userRecord.quiz_score) ? '-' : userRecord.quiz_score} / ${fullQuizScore}`;
+                asgScoreOutput.textContent = `${isNaN(userRecord.asg_score) ? '-' : userRecord.asg_score} / ${fullAsgScore}`;
+                totalScoreOutput.textContent = `${userRecord.total_score.toFixed(2)} / ${fullScore}`;
+
+                showResult();
+                drawNormalCurve(userRecord.total_score);
+            } else {
+                showError(`Student ID "${studentId}" not found.`);
+                hideResult();
+            }
+        });
+        
+        studentIdInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (!findButton.disabled) {
+                    findButton.click();
+                }
+            }
+        });
+
+        /**
+         * Draws the normal distribution curve on the canvas based on total scores.
+         * @param {number} userScore - The total score of the current user.
+         */
+        function drawNormalCurve(userScore) {
+            const ctx = canvas.getContext('2d');
+            const { width, height } = canvas;
+            ctx.clearRect(0, 0, width, height);
+
+            const { mean, stdDev } = scoreStats;
+            if (stdDev === 0 && csvData.length < 2) return; 
+
+            const padding = 50;
+            const chartWidth = width - padding * 2;
+            const chartHeight = height - padding;
+            
+            const getX = (score) => padding + (score / fullScore) * chartWidth;
+
+            const pdf = (x) => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
+            const maxPdf = stdDev > 0 ? pdf(mean) : 1; 
+
+            // Draw the curve
+            ctx.beginPath();
+            ctx.moveTo(getX(0), height - padding / 2);
+            for (let score = 0; score <= fullScore; score += 0.5) {
+                const x = getX(score);
+                const y = (height - padding / 2) - (stdDev > 0 ? (pdf(score) / maxPdf) * (chartHeight * 0.9) : 0);
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding / 2);
+            ctx.lineTo(width - padding, height - padding / 2);
+            ctx.strokeStyle = '#9ca3af';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            const drawMarker = (score, color, text, isUser = false) => {
+                const x = getX(score);
+                ctx.beginPath();
+                ctx.moveTo(x, height - padding / 2);
+                ctx.lineTo(x, padding / 2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = isUser ? 2 : 1;
+                ctx.setLineDash(isUser ? [] : [5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+                
+                // Position user score text at the top, and average score text at the bottom to avoid overlap
+                const textYPosition = isUser ? (padding / 2 - 5) : (height - padding / 2 + 15);
+                ctx.fillText(text, x, textYPosition);
+            };
+
+            drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(2)}`);
+            if (typeof userScore === 'number' && !isNaN(userScore)) {
+                drawMarker(userScore, '#ef4444', `You: ${userScore.toFixed(2)}`, true);
+            }
+            
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px Inter';
+            ctx.fillText('0', padding, height - padding / 2 + 15);
+            ctx.fillText(String(fullScore), width - padding, height - padding / 2 + 15);
+        }
+
+        function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); hideResult(); }
+        function hideError() { if (!errorMessage.classList.contains('hidden')) { errorMessage.classList.add('hidden'); } }
+        function showResult() { if (resultContainer.classList.contains('hidden')) { resultContainer.classList.remove('hidden'); } }
+        function hideResult() { 
+            if (!resultContainer.classList.contains('hidden')) { 
+                resultContainer.classList.add('hidden'); 
+            }
+        }
+    </script>
+</body>
+</html>
+
